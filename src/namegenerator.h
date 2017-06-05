@@ -19,9 +19,11 @@ class NameGenerator {
 		std::vector<std::string> maleNames;
 		std::vector<std::string> femaleNames;
 
+		void readDataFiles();
+
 	public:
 		NameGenerator();
 		~NameGenerator();
 
-		void readDataFiles();
+		string generateName(bool male = true);
 };

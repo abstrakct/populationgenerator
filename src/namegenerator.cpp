@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "debug.h"
+#include "utils.h"
 #include "namegenerator.h"
 
 NameGenerator::NameGenerator()
@@ -88,3 +89,32 @@ void NameGenerator::readDataFiles()
         cout << "caught exception in parseNames" << endl;
     }
 }
+
+string NameGenerator::generateName(bool male)
+{
+    int i, j;
+    string givenname, lastname, fullname;
+
+    if(male) {
+        i = ri(0, maleNames.size()-1);
+        givenname = maleNames[i];
+    } else {
+        i = ri(0, femaleNames.size()-1);
+        givenname = femaleNames[i];
+    }
+
+    j = ri(1, 100);
+    
+    if(j <= commonPercentage) {
+        i = ri(0, commonFamilyNames.size()-1);
+        lastname = commonFamilyNames[i];
+    } else if(j > commonPercentage) {
+        i = ri(0, uncommonFamilyNames.size()-1);
+        lastname = uncommonFamilyNames[i];
+    }
+
+    fullname = givenname + " " + lastname;
+    return fullname;
+}
+
+// vim: fdm=syntax
