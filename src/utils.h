@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+#include <cctype>
 #include <boost/serialization/base_object.hpp>
 #include "debug.h"
 
@@ -12,6 +14,7 @@ bool x_in_y(int x, int y);
 bool one_in(int chance);
 int dice(int num, int sides, signed int modifier);
 int roll_die();
+std::string cap(std::string s);
 
 
 // vim: fdm=syntax

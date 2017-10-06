@@ -3,6 +3,8 @@
  */
 
 #include <stdlib.h>
+#include <string>
+#include <cctype>
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
@@ -65,4 +67,10 @@ signed int ability_modifier(int ab)
     return ((ab / 2) - 5);
 }
 
+std::string cap(std::string s)
+{
+    std::string ret = s;
+    ret[0] = toupper(ret[0]);
+    return ret;
+}
 // vim: fdm=syntax
