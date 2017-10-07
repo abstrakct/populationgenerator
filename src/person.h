@@ -21,7 +21,6 @@ class Person : public Entity, public std::enable_shared_from_this<Person> {
 		bool bornHere;
 		int movedYear;
 		bool married;
-		int marriedYear;
 
         std::shared_ptr<Person> mother = NULL;
         std::shared_ptr<Person> father = NULL;
@@ -42,8 +41,7 @@ class Person : public Entity, public std::enable_shared_from_this<Person> {
 		void setMarried(bool b) { married = b; };
 		bool isMarried() { return married; };
 		void setSpouse(std::shared_ptr<Person> p) { spouse = p; };
-		void setMarriedYear(int y) { marriedYear = y; };
-		int  getMarriedYear() { return marriedYear; };
+        std::shared_ptr<Person> getSpouse() { return spouse; };
 
         std::string getPossessivePronoun() { 
             if(gender == male)
@@ -70,4 +68,6 @@ class Person : public Entity, public std::enable_shared_from_this<Person> {
 		void describe();
 		void generateRandom();
 		int  getBirthYear();
+		int  getMarriageYear();
+		void marry(std::shared_ptr<Person> spouse, int date);
 };

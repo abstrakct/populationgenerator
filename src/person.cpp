@@ -20,7 +20,7 @@ void Person::describe()
 
     //description << getName() << " was born in " << getBirthYear() << ". ";
     
-    for(auto it : ev) {
+    for(auto it : ev) {     // TODO: find? search? separate methods for getting birth event etc?
         if(it->getType() == etBirth) {
             BirthEvent *b = dynamic_cast<BirthEvent*>(it);
             description << b->describe();
@@ -42,8 +42,14 @@ void Person::describe()
         description << cap(getPersonalPronoun()) << " moved to Collinsport in " << getMovedYear() << "." << std::endl;
     }
 
+
     if(isMarried()) {
-        description << "In " << getMarriedYear() << ", at age " << getAge(getMarriedYear()) << ", " << getPersonalPronoun() << " got married to " << spouse->getName() << " (" << spouse->getAge(getMarriedYear()) << " years old)." << std::endl;
+        for(auto it : ev) {
+            if(it->getType() == etMarriage) {
+                MarriageEvent *m = dynamic_cast<MarriageEvent*>(it);
+                description << m->describe();
+            }
+        }
     } else {
         description << cap(getPersonalPronoun()) << " never married." << std::endl;
     }
@@ -63,15 +69,34 @@ void Person::generateRandom()
     }
 
     int birthyear = 1660 + ri(-10, 10);
-    BirthEvent *b = new BirthEvent(shared_from_this(), birthyear, etBirth);
+    BirthEvent *b = new BirthEvent(shared_from_this(), birthyear);
     ev.push_back(b);
 }
 
 
-int  Person::getBirthYear() { 
+int Person::getBirthYear() { 
     for(auto it : ev) {
         if(it->getType() == etBirth)
             return it->getDate();
     }
     return 0;
 };
+
+int Person::getMarriageYear() { 
+    for(auto it : ev) {
+        if(it->getType() == etMarriage)
+            return it->getDate();
+    }
+    return 0;
+};
+
+void Person::marry(std::shared_ptr<Person> spouse, int date)
+{
+    setSpouse(spouse);
+    spouse->setSpouse(shared_from_this());
+    setMarried(true);
+    spouse->setMarried(true);
+
+    MarriageEvent *m = new MarriageEvent(shared_from_this(), date);
+    ev.push_back(m);
+}

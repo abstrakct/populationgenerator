@@ -47,9 +47,18 @@ class BirthEvent : public PersonalEvent {
     private:
 
     public:
-        BirthEvent(std::shared_ptr<Person> o) : PersonalEvent(o) {};
-        BirthEvent(std::shared_ptr<Person> o, int d) : PersonalEvent(o, d) {};
-        BirthEvent(std::shared_ptr<Person> o, int d, eventType t) : PersonalEvent(o, d, t) {};
+        //BirthEvent(std::shared_ptr<Person> o) : PersonalEvent(o) {};
+        BirthEvent(std::shared_ptr<Person> o, int d) : PersonalEvent(o, d, etBirth) {};
+
+        std::string describe();
+        void execute();
+};
+
+class MarriageEvent : public PersonalEvent {
+    private:
+
+    public:
+        MarriageEvent(std::shared_ptr<Person> o, int d) : PersonalEvent(o, d, etMarriage) {};
 
         std::string describe();
         void execute();

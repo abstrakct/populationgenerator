@@ -66,12 +66,14 @@ void lookForPartners(int year)
                                 //cout << m->getName() << " considers " << f->getName() << " as a potential partner." << endl;
                                 if(one_in(3) && (*f)->getAge(year) <= ((*m)->getAge(year) + ri(-3,3))) {
                                     //cout << m->getName() << " gets married to " << f->getName() << "!" << endl;
-                                    (*m)->setMarried(true);
-                                    (*f)->setMarried(true);
-                                    (*m)->setSpouse(*f);
-                                    (*f)->setSpouse(*m);
-                                    (*m)->setMarriedYear(year);
-                                    (*f)->setMarriedYear(year);
+                                    //(*m)->setMarried(true);
+                                    //(*f)->setMarried(true);
+                                    //(*m)->setSpouse(*f);
+                                    //(*f)->setSpouse(*m);
+                                    //(*m)->setMarriedYear(year);
+                                    //(*f)->setMarriedYear(year);
+                                    (*m)->marry(*f, year);
+                                    (*f)->marry(*m, year);
                                 }
                             }
                         }
@@ -87,12 +89,14 @@ void lookForPartners(int year)
                                 //cout << f->getName() << " considers " << m->getName() << " as a potential partner." << endl;
                                 if(one_in(3) && (*f)->getAge(year) <= ((*m)->getAge(year) + ri(-3,3))) {
                                     //cout << f->getName() << " gets married to " << m->getName() << "!" << endl;
-                                    (*f)->setMarried(true);
-                                    (*m)->setMarried(true);
-                                    (*f)->setSpouse(*m);
-                                    (*m)->setSpouse(*f);
-                                    (*f)->setMarriedYear(year);
-                                    (*m)->setMarriedYear(year);
+                                    //(*f)->setMarried(true);
+                                    //(*m)->setMarried(true);
+                                    //(*f)->setSpouse(*m);
+                                    //(*m)->setSpouse(*f);
+                                    //(*f)->setMarriedYear(year);
+                                    //(*m)->setMarriedYear(year);
+                                    (*f)->marry(*m, year);
+                                    (*m)->marry(*f, year);
                                 }
                             }
                         }
