@@ -1,8 +1,12 @@
 #pragma once
 
 #include "entity.h"
+#include "personalevent.h"
+
 #include <vector>
 #include <memory>
+
+class PersonalEvent;
 
 enum Gender {
     male,
@@ -11,9 +15,8 @@ enum Gender {
 };
 
 
-class Person : public Entity {
+class Person : public Entity, public std::enable_shared_from_this<Person> {
 	private:
-		int birthYear;
 		Gender gender;
 		bool bornHere;
 		int movedYear;
@@ -22,14 +25,14 @@ class Person : public Entity {
 
         std::shared_ptr<Person> mother = NULL;
         std::shared_ptr<Person> father = NULL;
-        std::shared_ptr<Person> spouse;
+        std::shared_ptr<Person> spouse = NULL;
         std::vector<Person*> siblings;
 
         
 	public:
 
-		void setBirthYear(int y) { birthYear = y; };
-		int  getBirthYear() { return birthYear; };
+        std::vector<PersonalEvent*> ev;
+
 		void setGender(Gender g) { gender = g; };
 		Gender getGender() { return gender; };
 		void setBornHere(bool b) { bornHere = b; };
@@ -61,9 +64,10 @@ class Person : public Entity {
         };
 
         int getAge(int year) {
-            return (year - birthYear);
+            return (year - getBirthYear());
         };
 
 		void describe();
 		void generateRandom();
+		int  getBirthYear();
 };

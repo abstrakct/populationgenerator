@@ -18,7 +18,14 @@ void Person::describe()
 {
     std::stringstream description;
 
-    description << getName() << " was born in " << getBirthYear() << ". ";
+    //description << getName() << " was born in " << getBirthYear() << ". ";
+    
+    for(auto it : ev) {
+        if(it->getType() == etBirth) {
+            BirthEvent *b = dynamic_cast<BirthEvent*>(it);
+            description << b->describe();
+        }
+    }
 
     if(mother == NULL && father == NULL) {
         description << "It is not known who " << getPossessivePronoun() << " parents were." << std::endl;
@@ -55,5 +62,16 @@ void Person::generateRandom()
         setGender(female);
     }
 
-    setBirthYear(1660 + ri(-10, 10));
+    int birthyear = 1660 + ri(-10, 10);
+    BirthEvent *b = new BirthEvent(shared_from_this(), birthyear, etBirth);
+    ev.push_back(b);
 }
+
+
+int  Person::getBirthYear() { 
+    for(auto it : ev) {
+        if(it->getType() == etBirth)
+            return it->getDate();
+    }
+    return 0;
+};
