@@ -69,7 +69,11 @@ void Person::generateRandom()
     }
 
     int birthyear = 1660 + ri(-10, 10);
-    BirthEvent *b = new BirthEvent(shared_from_this(), birthyear);
+    int birthmonth = ri(1, 12);
+    int birthday = ri(1,28);
+    Date d = Date(birthyear, birthmonth, birthday);
+
+    BirthEvent *b = new BirthEvent(shared_from_this(), d);
     ev.push_back(b);
 }
 
@@ -77,7 +81,7 @@ void Person::generateRandom()
 int Person::getBirthYear() { 
     for(auto it : ev) {
         if(it->getType() == etBirth)
-            return it->getDate();
+            return it->getDate().getYear();
     }
     return 0;
 };
@@ -85,7 +89,7 @@ int Person::getBirthYear() {
 int Person::getMarriageYear() { 
     for(auto it : ev) {
         if(it->getType() == etMarriage)
-            return it->getDate();
+            return it->getDate().getYear();
     }
     return 0;
 };
@@ -97,6 +101,11 @@ void Person::marry(std::shared_ptr<Person> spouse, int date)
     setMarried(true);
     spouse->setMarried(true);
 
-    MarriageEvent *m = new MarriageEvent(shared_from_this(), date);
+    int y = date;
+    int mo = ri(1,12);
+    int d = ri(1,28);
+    Date x = Date(y, mo, d);
+
+    MarriageEvent *m = new MarriageEvent(shared_from_this(), x);
     ev.push_back(m);
 }

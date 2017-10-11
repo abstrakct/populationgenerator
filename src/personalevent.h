@@ -6,6 +6,7 @@
 #include <string>
 #include <memory>
 #include "person.h"
+#include "date.h"
 
 class Person;
 
@@ -17,7 +18,7 @@ enum eventType {
 
 class PersonalEvent {
     private:
-        int year;    // TODO: months, days
+        Date date;
         eventType type;
     public:
         std::shared_ptr<Person> owner;
@@ -25,18 +26,18 @@ class PersonalEvent {
         PersonalEvent(std::shared_ptr<Person> o) {
             owner = o;
         };
-        PersonalEvent(std::shared_ptr<Person> o, int date) {
+        PersonalEvent(std::shared_ptr<Person> o, Date d) {
             owner = o;
-            year = date;
+            date = d;
         };
-        PersonalEvent(std::shared_ptr<Person> o, int date, eventType t) {
+        PersonalEvent(std::shared_ptr<Person> o, Date d, eventType t) {
             owner = o;
-            year = date;
+            date = d;
             type = t;
         };
 
-        void setDate(int y) { year = y; };
-        int  getDate() { return year; };
+        void setDate(Date d) { date = d; };
+        Date getDate() { return date; };
         eventType getType() { return type; };
 
         virtual std::string describe() = 0;
@@ -48,7 +49,7 @@ class BirthEvent : public PersonalEvent {
 
     public:
         //BirthEvent(std::shared_ptr<Person> o) : PersonalEvent(o) {};
-        BirthEvent(std::shared_ptr<Person> o, int d) : PersonalEvent(o, d, etBirth) {};
+        BirthEvent(std::shared_ptr<Person> o, Date d) : PersonalEvent(o, d, etBirth) {};
 
         std::string describe();
         void execute();
@@ -58,7 +59,7 @@ class MarriageEvent : public PersonalEvent {
     private:
 
     public:
-        MarriageEvent(std::shared_ptr<Person> o, int d) : PersonalEvent(o, d, etMarriage) {};
+        MarriageEvent(std::shared_ptr<Person> o, Date d) : PersonalEvent(o, d, etMarriage) {};
 
         std::string describe();
         void execute();

@@ -30,7 +30,7 @@ class Person : public Entity, public std::enable_shared_from_this<Person> {
         
 	public:
 
-        std::vector<PersonalEvent*> ev;
+        std::vector<PersonalEvent*> ev;         // TODO: change to map (?) for easier lookup!!
 
 		void setGender(Gender g) { gender = g; };
 		Gender getGender() { return gender; };
