@@ -16,8 +16,9 @@ enum Gender {
 };
 
 
-class Person : public Entity, public std::enable_shared_from_this<Person> {
+class Person : public std::enable_shared_from_this<Person> {
 	private:
+	    Name name;
 		Gender gender;
 		bool bornHere;
 		int movedYear;
@@ -32,8 +33,10 @@ class Person : public Entity, public std::enable_shared_from_this<Person> {
         
 	public:
 
-        std::vector<PersonalEvent*> ev;         // TODO: change to map (?) for easier lookup!!
+        std::vector<PersonalEvent*> ev;         // TODO: change to map (?) for easier lookup!!??? wouldn't work for multiple marriages etc.
 
+		std::string getName() { return name.get(); };
+		void setName(Name n) { name.set(n); };
         void setAlive(bool b = true) { alive = b; };
         bool isAlive() { return alive; };
 		void setGender(Gender g) { gender = g; };

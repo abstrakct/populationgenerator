@@ -90,10 +90,11 @@ void NameGenerator::readDataFiles()
     }
 }
 
-string NameGenerator::generateName(bool male)
+Name NameGenerator::generateName(bool male)
 {
     int i, j;
-    string givenname, lastname, fullname;
+    string givenname, lastname;
+    Name n;
 
     if(male) {
         i = ri(0, maleNames.size()-1);
@@ -113,8 +114,9 @@ string NameGenerator::generateName(bool male)
         lastname = uncommonFamilyNames[i];
     }
 
-    fullname = givenname + " " + lastname;
-    return fullname;
+    n.setGiven(givenname);
+    n.setFamily(lastname);
+    return n;
 }
 
 // vim: fdm=syntax

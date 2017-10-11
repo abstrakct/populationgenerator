@@ -11,6 +11,18 @@
 using namespace libconfig;
 using namespace std;
 
+// TODO: add married name!
+class Name {
+    private:
+        std::string given, family;
+    public:
+        void setGiven(std::string g) { given = g; };
+        void setFamily(std::string f) { family = f; };
+        std::string get() { return given + " " + family; };
+        void set(string g, string f) { given = g; family = f; };
+        void set(Name n) { given = n.given; family = n.family; };
+};
+
 class NameGenerator {
 	private:
 		int commonPercentage, numCommonFamilyNames, numUncommonFamilyNames, numMaleNames, numFemaleNames;
@@ -25,5 +37,5 @@ class NameGenerator {
 		NameGenerator();
 		~NameGenerator();
 
-		string generateName(bool male = true);
+		Name generateName(bool male = true);
 };

@@ -2,6 +2,7 @@
 
 // Personal events - things that happen in the life of a person
 //
+// TODO: Scheduled events! For example marriage, child birth, etc.
 
 #include <string>
 #include <memory>
