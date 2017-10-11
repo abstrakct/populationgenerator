@@ -4,6 +4,7 @@
 #include "person.h"
 #include "utils.h"
 #include "date.h"
+#include "population.h"
 
 #include <iostream>
 #include <vector>
@@ -16,10 +17,12 @@ using namespace std;
 #include <boost/random/uniform_int_distribution.hpp>
 
 int seed;
+const int yearzero = 1660;
 boost::random::mt19937 rng;
 NameGenerator *n;
 
-vector<std::shared_ptr<Person>> pop;
+// vector<std::shared_ptr<Person>> pop;
+Population pop;
 
 
 void setupInitialPopulation()
@@ -35,7 +38,7 @@ void setupInitialPopulation()
 
 	    p->generateRandom();
 	    p->setBornHere(true);
-	    pop.push_back(p);
+        pop.addPerson(p);
     }
 }
 
@@ -50,7 +53,7 @@ void lookForNewPeople(Date d)
             p->generateRandom();
             p->setBornHere(false);
             p->setMovedYear(d.getYear());
-            pop.push_back(p);
+            pop.addPerson(p);
         }
     }
 }
@@ -59,9 +62,9 @@ void lookForPartners(Date d)
 {
     int year = d.getYear();
 
-    for(auto m : pop) {
-        for(auto f : pop) {
-            if(!m->isMarried() && year >= m->getBirthYear() + 18) {
+    for(auto m : pop.getAllUnmarried()) {             // no adultery supported for now!
+        for(auto f : pop.getAllUnmarried()) {
+            if(year >= m->getBirthYear() + 18) {
                 if(f != m) {
                     if(m->getGender() == male && f->getGender() == female) {
                         if(year >= f->getBirthYear() + 18) {
@@ -76,7 +79,7 @@ void lookForPartners(Date d)
                 }
             }
             
-            if(!f->isMarried() && year >= f->getBirthYear() + 18) {
+            if(year >= f->getBirthYear() + 18) {
                 if(m != f) {
                     if(f->getGender() == female && m->getGender() == male) {
                         if(year >= m->getBirthYear() + 18) {
@@ -95,22 +98,50 @@ void lookForPartners(Date d)
 }
 
 
+void processDayOld(Date d)
+{
+    int x = ri(1, 3);
+
+    switch(x) {
+        case 1:
+            lookForNewPeople(d);
+            break;
+        case 2:
+            lookForPartners(d);
+            break;
+        case 3:
+        default:
+            break;
+    }
+}
+
 void processDay(Date d)
 {
-    lookForNewPeople(d);
-    lookForPartners(d);
+    //int year = d.getYear();
+
+    // Step 1:
+    // Go through all the people, see if something should be done to anyone...
+    for(auto it : pop.getAll()) {
+        if(it->isAlive()) {
+            if(one_in(250))
+                it->checkUnexpectedDeath(d);
+        }
+    }
 }
 
 void simulate()
 {
-    Date startDate = Date(1670, 1, 1);
-    int years = 10;
+    Date startDate = Date(yearzero + 10, 1, 1);
+    int years = 5;
 
     for(int i = 0; i < (365 * years); i++) {
         ++startDate;
         processDay(startDate);
     }
+}
 
+void simulateasdf()
+{
 }
 
 int main()
@@ -125,10 +156,10 @@ int main()
     setupInitialPopulation();
     simulate();
 
-    for(auto it : pop) {
+    // idea: output to textfile! name yyyymmddhhmmss or something.
+    for(auto it : pop.getAll()) {
         it->describe();
     }
-
 
 	return 0;
 }

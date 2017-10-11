@@ -5,12 +5,14 @@
 #include "person.h"
 #include "utils.h"
 #include "namegenerator.h"
+#include "date.h"
 
 // Boost random number library
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 
 extern int seed;
+extern const int yearzero = 1660;
 extern boost::random::mt19937 rng;
 extern NameGenerator *n;
 
@@ -54,6 +56,15 @@ void Person::describe()
         description << cap(getPersonalPronoun()) << " never married." << std::endl;
     }
 
+    if(!isAlive()) {
+        for(auto it : ev) {
+            if(it->getType() == etDeath) {
+                DeathEvent *dev = dynamic_cast<DeathEvent*>(it);
+                description << dev->describe();
+            }
+        }
+    }
+
     description << std::endl;
     std::cout << description.str();
 }
@@ -68,7 +79,7 @@ void Person::generateRandom()
         setGender(female);
     }
 
-    int birthyear = 1660 + ri(-10, 10);
+    int birthyear = yearzero + ri(-50, 5);
     int birthmonth = ri(1, 12);
     int birthday = ri(1,28);
     Date d = Date(birthyear, birthmonth, birthday);
@@ -86,6 +97,14 @@ int Person::getBirthYear() {
     return 0;
 };
 
+Date Person::getBirthday() { 
+    for(auto it : ev) {
+        if(it->getType() == etBirth)
+            return it->getDate();
+    }
+    return Date(0, 0, 0);
+};
+
 int Person::getMarriageYear() { 
     for(auto it : ev) {
         if(it->getType() == etMarriage)
@@ -93,6 +112,44 @@ int Person::getMarriageYear() {
     }
     return 0;
 };
+
+Date Person::getMarriageDate() { 
+    for(auto it : ev) {
+        if(it->getType() == etMarriage)
+            return it->getDate();
+    }
+    return Date(0, 0, 0);
+};
+
+Date Person::getDeathDate() {
+    for(auto it : ev) {
+        if(it->getType() == etDeath)
+            return it->getDate();
+    }
+    return Date(0, 0, 0);
+}
+
+// Get a person's age at a given date, checking whether or not it is on/after the person's birthday that year.
+int Person::getAge(Date d) {
+    // TODO: do this with operator overloading in Date class? find out.
+    int age;
+    Date bd = getBirthday();
+    age = d.getYear() - bd.getYear();
+
+    if(d.getMonth() < bd.getMonth()) {
+        age--;
+        return age;
+    }
+
+    if(d.getMonth() == bd.getMonth()) {
+        if(d.getDay() < bd.getDay()) {
+            age--;
+            return age;
+        }
+    }
+    
+    return age;
+}
 
 void Person::marry(std::shared_ptr<Person> spouse, int date)
 {
@@ -108,4 +165,39 @@ void Person::marry(std::shared_ptr<Person> spouse, int date)
 
     MarriageEvent *m = new MarriageEvent(shared_from_this(), x);
     ev.push_back(m);
+}
+
+void Person::kill(Date d)
+{
+    setAlive(false);
+    DeathEvent *event = new DeathEvent(shared_from_this(), d);
+    ev.push_back(event);
+}
+
+void Person::checkOldAge(Date d)
+{
+    int year = d.getYear();
+    int age = this->getAge(year);
+    double a = (double) age;
+
+    if(age >= 50) {
+        double riskOfDying = pow(2.0, (double)(a / 15.0));
+        int risk = (int) riskOfDying;
+        //dbg("Risk of dying at age %d: %f (%d)", age, riskOfDying, risk);
+    }
+}
+
+void Person::checkUnexpectedDeath(Date d)
+{
+    int year = d.getYear();
+    int age = this->getAge(year);
+    double a = (double) age;
+    double riskOfDying = pow(2.0, (double)(a / 15.0));
+    int risk = (int) riskOfDying;
+
+    if(risk > 0) {
+        if(x_in_y(risk, 100)) {
+            kill(d);
+        }
+    }
 }

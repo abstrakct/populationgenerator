@@ -41,7 +41,7 @@ class PersonalEvent {
         eventType getType() { return type; };
 
         virtual std::string describe() = 0;
-        virtual void execute() = 0;
+        virtual void execute() = 0;            // needed?? TODO
 };
 
 class BirthEvent : public PersonalEvent {
@@ -60,6 +60,18 @@ class MarriageEvent : public PersonalEvent {
 
     public:
         MarriageEvent(std::shared_ptr<Person> o, Date d) : PersonalEvent(o, d, etMarriage) {};
+
+        std::string describe();
+        void execute();
+};
+
+class DeathEvent : public PersonalEvent {
+    private:
+        std::string reason = "passed away, for reasons unknown";
+
+    public:
+        DeathEvent(std::shared_ptr<Person> o, Date d) : PersonalEvent(o, d, etDeath) {};
+        DeathEvent(std::shared_ptr<Person> o, Date d, std::string r) : PersonalEvent(o, d, etDeath) { reason = r; };
 
         std::string describe();
         void execute();

@@ -2,6 +2,7 @@
 
 #include "entity.h"
 #include "personalevent.h"
+#include "date.h"
 
 #include <vector>
 #include <memory>
@@ -21,6 +22,7 @@ class Person : public Entity, public std::enable_shared_from_this<Person> {
 		bool bornHere;
 		int movedYear;
 		bool married;
+		bool alive = true;
 
         std::shared_ptr<Person> mother = NULL;
         std::shared_ptr<Person> father = NULL;
@@ -32,6 +34,8 @@ class Person : public Entity, public std::enable_shared_from_this<Person> {
 
         std::vector<PersonalEvent*> ev;         // TODO: change to map (?) for easier lookup!!
 
+        void setAlive(bool b = true) { alive = b; };
+        bool isAlive() { return alive; };
 		void setGender(Gender g) { gender = g; };
 		Gender getGender() { return gender; };
 		void setBornHere(bool b) { bornHere = b; };
@@ -42,6 +46,7 @@ class Person : public Entity, public std::enable_shared_from_this<Person> {
 		bool isMarried() { return married; };
 		void setSpouse(std::shared_ptr<Person> p) { spouse = p; };
         std::shared_ptr<Person> getSpouse() { return spouse; };
+        Date getDeathDate();
 
         std::string getPossessivePronoun() { 
             if(gender == male)
@@ -65,9 +70,18 @@ class Person : public Entity, public std::enable_shared_from_this<Person> {
             return (year - getBirthYear());
         };
 
+        int getAge(Date d);
+
 		void describe();
 		void generateRandom();
 		int  getBirthYear();
+		Date getBirthday();
 		int  getMarriageYear();
+        Date getMarriageDate();
 		void marry(std::shared_ptr<Person> spouse, int date);
+		void kill(Date d);
+
+		// Checks for various things
+		void checkOldAge(Date d);
+		void checkUnexpectedDeath(Date d);
 };
