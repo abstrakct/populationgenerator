@@ -6,6 +6,7 @@
 #include "utils.h"
 #include "namegenerator.h"
 #include "date.h"
+#include "population.h"
 
 // Boost random number library
 #include <boost/random/mersenne_twister.hpp>
@@ -15,7 +16,31 @@ extern int seed;
 extern const int yearzero = 1660;
 extern boost::random::mt19937 rng;
 extern NameGenerator *n;
+extern Population pop;
 
+bool agesWithinReason(int a, int b)
+{
+    if((max(a, b) - min(a, b)) <= (12 + ri(-2, 2)))   // add some randomization/variability
+        return true;
+    else
+        return false;
+}
+
+void lookForPartners(shared_ptr<Person> p, Date d)
+{
+    for(auto partner : pop.getAllUnmarried()) {
+        if(partner->getGender() != p->getGender() && partner->getAge(d) >= 18 && partner->getFamilyName() != p->getFamilyName()) {     // no same sex marriages yet :/ maybe in the progressive future. On the bright side, also no children getting married or people with the same family name (the latter are assumed to be related).
+            if((agesWithinReason(partner->getAge(d), p->getAge(d)))) {
+                p->marry(partner, d);
+                partner->marry(p, d);
+                return;
+            }
+        }
+    }
+}
+
+
+// Methods for Person class
 void Person::describe()
 {
     std::stringstream description;
@@ -50,6 +75,10 @@ void Person::describe()
             if(it->getType() == etMarriage) {
                 MarriageEvent *m = dynamic_cast<MarriageEvent*>(it);
                 description << m->describe();
+            }
+            if(it->getType() == etWidow) {
+                WidowEvent *w = dynamic_cast<WidowEvent*>(it);
+                description << w->describe();
             }
         }
     } else {
@@ -129,9 +158,17 @@ Date Person::getDeathDate() {
     return Date(0, 0, 0);
 }
 
+Date Person::getWidowDate() {
+    for(auto it : ev) {
+        if(it->getType() == etWidow)
+            return it->getDate();
+    }
+    return Date(0, 0, 0);
+}
+
 // Get a person's age at a given date, checking whether or not it is on/after the person's birthday that year.
 int Person::getAge(Date d) {
-    // TODO: do this with operator overloading in Date class? find out.
+    // TODO: compare dates with operator overloading in Date class? find out.
     int age;
     Date bd = getBirthday();
     age = d.getYear() - bd.getYear();
@@ -151,19 +188,16 @@ int Person::getAge(Date d) {
     return age;
 }
 
-void Person::marry(std::shared_ptr<Person> spouse, int date)
+void Person::marry(std::shared_ptr<Person> spouse, Date date)
 {
+    if(married) {
+        dbg("%s is already married!", name.get().c_str());
+    }
+
     setSpouse(spouse);
-    spouse->setSpouse(shared_from_this());
     setMarried(true);
-    spouse->setMarried(true);
 
-    int y = date;
-    int mo = ri(1,12);
-    int d = ri(1,28);
-    Date x = Date(y, mo, d);
-
-    MarriageEvent *m = new MarriageEvent(shared_from_this(), x);
+    MarriageEvent *m = new MarriageEvent(shared_from_this(), date);
     ev.push_back(m);
 }
 
@@ -172,6 +206,17 @@ void Person::kill(Date d)
     setAlive(false);
     DeathEvent *event = new DeathEvent(shared_from_this(), d);
     ev.push_back(event);
+
+    if(married && spouse->isAlive())
+        spouse->makeWidow(d);
+}
+
+// Make a person a widow(er)
+// For now, widow(er)s don't remarry, so married flag stays true.
+void Person::makeWidow(Date d)
+{
+    WidowEvent *wid = new WidowEvent(shared_from_this(), d);
+    ev.push_back(wid);
 }
 
 void Person::checkOldAge(Date d)

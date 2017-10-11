@@ -44,20 +44,19 @@ void setupInitialPopulation()
 
 void lookForNewPeople(Date d)
 {
-    if(one_in(100)) {
-        int num = ri(1, 2);
-        for(int i = 0; i < num; ++i) {
-            std::shared_ptr<Person> p;
-            p = make_shared<Person>();
+    int num = ri(1, 2);
+    for(int i = 0; i < num; ++i) {
+        std::shared_ptr<Person> p;
+        p = make_shared<Person>();
 
-            p->generateRandom();
-            p->setBornHere(false);
-            p->setMovedYear(d.getYear());
-            pop.addPerson(p);
-        }
+        p->generateRandom();
+        p->setBornHere(false);
+        p->setMovedYear(d.getYear());
+        pop.addPerson(p);
     }
 }
 
+/*
 void lookForPartners(Date d)
 {
     int year = d.getYear();
@@ -96,24 +95,7 @@ void lookForPartners(Date d)
         }
     }
 }
-
-
-void processDayOld(Date d)
-{
-    int x = ri(1, 3);
-
-    switch(x) {
-        case 1:
-            lookForNewPeople(d);
-            break;
-        case 2:
-            lookForPartners(d);
-            break;
-        case 3:
-        default:
-            break;
-    }
-}
+*/
 
 void processDay(Date d)
 {
@@ -125,14 +107,21 @@ void processDay(Date d)
         if(it->isAlive()) {
             if(one_in(250))
                 it->checkUnexpectedDeath(d);
+            if(!it->isMarried() && it->getAge(d) >= 18 && one_in(30))
+                lookForPartners(it, d);
         }
     }
+
+    // Step 2:
+    // Check for external events
+    //if(one_in(250))
+    //    lookForNewPeople(d);
 }
 
 void simulate()
 {
     Date startDate = Date(yearzero + 10, 1, 1);
-    int years = 5;
+    int years = 50;
 
     for(int i = 0; i < (365 * years); i++) {
         ++startDate;

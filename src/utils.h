@@ -7,6 +7,11 @@
 
 #define CALL_MEMBER_FN(object, ptr) ((object).*(ptr))()
 
+/*
+#define max(a, b) (a > b ? a : b)
+#define min(a, b) (a < b ? a : b)
+*/
+
 signed int ability_modifier(int ab);
 int ri(int a, int b);
 bool fiftyfifty();

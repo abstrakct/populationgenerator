@@ -7,14 +7,16 @@
 #include <vector>
 #include <memory>
 
+// Forward declarations
 class PersonalEvent;
+class Person;
+void lookForPartners(shared_ptr<Person> p, Date d);
 
 enum Gender {
     male,
     female,
     other
 };
-
 
 class Person : public std::enable_shared_from_this<Person> {
 	private:
@@ -37,6 +39,7 @@ class Person : public std::enable_shared_from_this<Person> {
 
 		std::string getName() { return name.get(); };
 		void setName(Name n) { name.set(n); };
+        std::string getFamilyName() { return name.getFamily(); };
         void setAlive(bool b = true) { alive = b; };
         bool isAlive() { return alive; };
 		void setGender(Gender g) { gender = g; };
@@ -49,6 +52,8 @@ class Person : public std::enable_shared_from_this<Person> {
 		bool isMarried() { return married; };
 		void setSpouse(std::shared_ptr<Person> p) { spouse = p; };
         std::shared_ptr<Person> getSpouse() { return spouse; };
+        void makeWidow(Date d);
+        Date getWidowDate();
         Date getDeathDate();
 
         std::string getPossessivePronoun() { 
@@ -81,7 +86,7 @@ class Person : public std::enable_shared_from_this<Person> {
 		Date getBirthday();
 		int  getMarriageYear();
         Date getMarriageDate();
-		void marry(std::shared_ptr<Person> spouse, int date);
+		void marry(std::shared_ptr<Person> spouse, Date date);
 		void kill(Date d);
 
 		// Checks for various things

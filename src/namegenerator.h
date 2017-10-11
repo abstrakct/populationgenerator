@@ -18,9 +18,10 @@ class Name {
     public:
         void setGiven(std::string g) { given = g; };
         void setFamily(std::string f) { family = f; };
-        std::string get() { return given + " " + family; };
         void set(string g, string f) { given = g; family = f; };
         void set(Name n) { given = n.given; family = n.family; };
+        std::string get() { return given + " " + family; };
+        std::string getFamily() { return family; };
 };
 
 class NameGenerator {
