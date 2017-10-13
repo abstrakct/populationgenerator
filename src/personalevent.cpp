@@ -7,7 +7,10 @@ std::string BirthEvent::describe()
 {
     std::stringstream s;
 
-    s << owner->getName() << " was born " << date.pp() << "." << std::endl;
+    if(owner->getGender() == male)
+        s << owner->getName() << " was born " << date.pp() << "." << std::endl;
+    if(owner->getGender() == female && owner->isMarried())
+        s << owner->getName() << ", née " << owner->getFamilyName() << ", was born " << date.pp() << "." << std::endl;
 
     std::string ret = s.str();
     return ret;
@@ -56,10 +59,10 @@ void WidowEvent::execute()
 std::string PregnantEvent::describe()
 {
     std::stringstream s;
-    if(owner->getGender() == female)
+    //if(owner->getGender() == female)
         s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " became pregnant!" << endl;
-    if(owner->getGender() == male)
-        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife became pregnant!" << endl;
+    //if(owner->getGender() == male)
+    //    s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife became pregnant!" << endl;
     std::string ret = s.str();
     return ret;
 }

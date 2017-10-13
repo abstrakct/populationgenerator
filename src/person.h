@@ -38,7 +38,7 @@ class Person : public std::enable_shared_from_this<Person> {
 
         std::vector<PersonalEvent*> ev;         // TODO: change to map (?) for easier lookup!!??? wouldn't work for multiple marriages etc.
 
-		std::string getName() { return name.get(); };
+		std::string getName();
 		void setName(Name n) { name.set(n); };
         std::string getFamilyName() { return name.getFamily(); };
         void setAlive(bool b = true) { alive = b; };

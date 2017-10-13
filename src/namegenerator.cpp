@@ -36,7 +36,7 @@ void NameGenerator::readDataFiles()
     try {
         const Setting &nameoptions = root["nameoptions"][0];
         int count = nameoptions.getLength();
-        dbg("Found %d name options.", count);
+//        dbg("Found %d name options.", count);
         nameoptions.lookupValue("common_percentage", commonPercentage);
     } catch(const SettingNotFoundException &nfex) {
         cout << "caught exception in parse_names" << endl;
@@ -49,7 +49,7 @@ void NameGenerator::readDataFiles()
         // Read family names
         const Setting &familyname = cf->lookup("names.commonfamilynames");
         count = numCommonFamilyNames = familyname.getLength();
-        dbg("Found %d common family names.", count);
+//        dbg("Found %d common family names.", count);
         for(int i = 0; i < count; i++) {
             path = "names.commonfamilynames.[" + std::to_string(i) + "]";
             cf->lookupValue(path, result);
@@ -58,7 +58,7 @@ void NameGenerator::readDataFiles()
 
         const Setting &uncommonfamilyname = cf->lookup("names.uncommonfamilynames");
         count = numUncommonFamilyNames = uncommonfamilyname.getLength();
-        dbg("Found %d uncommon family names.", count);
+//        dbg("Found %d uncommon family names.", count);
         for(int i = 0; i < count; i++) {
             path = "names.uncommonfamilynames.[" + std::to_string(i) + "]";
             cf->lookupValue(path, result);
@@ -68,7 +68,7 @@ void NameGenerator::readDataFiles()
         // Read male given names
         const Setting &malename = cf->lookup("names.malegivennames");
         count = numMaleNames = malename.getLength();
-        dbg("Found %d male names.", count);
+//        dbg("Found %d male names.", count);
         for(int i = 0; i < count; i++) {
             path = "names.malegivennames.[" + std::to_string(i) + "]";
             cf->lookupValue(path, result);
@@ -78,7 +78,7 @@ void NameGenerator::readDataFiles()
         // Read female given names
         const Setting &femalename = cf->lookup("names.femalegivennames");
         count = numFemaleNames = femalename.getLength();
-        dbg("Found %d female names.", count);
+//        dbg("Found %d female names.", count);
         for(int i = 0; i < count; i++) {
             path = "names.femalegivennames.[" + std::to_string(i) + "]";
             cf->lookupValue(path, result);

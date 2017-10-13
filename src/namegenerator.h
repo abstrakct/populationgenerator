@@ -14,14 +14,18 @@ using namespace std;
 // TODO: add married name!
 class Name {
     private:
-        std::string given, family;
+        std::string given, family, married;
     public:
         void setGiven(std::string g) { given = g; };
         void setFamily(std::string f) { family = f; };
+        void setMarried(std::string m) { married = m; };
         void set(string g, string f) { given = g; family = f; };
         void set(Name n) { given = n.given; family = n.family; };
         std::string get() { return given + " " + family; };
         std::string getFamily() { return family; };
+        std::string getMarried() { return married; };
+        std::string getFullMarried() { return given + " " + married; };
+        std::string getMaidenName() { return given + " " + family; };
 };
 
 class NameGenerator {

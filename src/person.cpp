@@ -68,6 +68,13 @@ void Person::generateRandom()
     ev.push_back(b);
 }
 
+std::string Person::getName()
+{
+    if(!isMarried())
+        return name.get();
+    else
+        return name.getFullMarried();
+}
 
 int Person::getBirthYear() { 
     for(auto it : ev) {
@@ -159,6 +166,10 @@ void Person::marry(std::shared_ptr<Person> spouse, Date date)
 
     setSpouse(spouse);
     setMarried(true);
+    if(gender == female)
+        name.setMarried(spouse->getFamilyName());
+    else
+        name.setMarried(getFamilyName());
 
     MarriageEvent *m = new MarriageEvent(shared_from_this(), date);
     ev.push_back(m);
