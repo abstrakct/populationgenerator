@@ -59,10 +59,10 @@ void WidowEvent::execute()
 std::string PregnantEvent::describe()
 {
     std::stringstream s;
-    //if(owner->getGender() == female)
-        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " became pregnant!" << endl;
-    //if(owner->getGender() == male)
-    //    s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife became pregnant!" << endl;
+    if(owner->getGender() == female)
+        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " became pregnant." << endl;
+    if(owner->getGender() == male)
+        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife became pregnant." << endl;
     std::string ret = s.str();
     return ret;
 }
@@ -74,14 +74,16 @@ void PregnantEvent::execute()
 std::string ChildbirthEvent::describe()
 {
     std::stringstream s;
-    //if(owner->getGender() == female)
-        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " became pregnant!" << endl;
-    //if(owner->getGender() == male)
-    //    s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife became pregnant!" << endl;
+    if(owner->getGender() == female)
+        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " gave birth to a child." << endl;
+    if(owner->getGender() == male)
+        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife gave birth to a child." << endl;
     std::string ret = s.str();
     return ret;
 }
 
 void ChildbirthEvent::execute()
 {
+    ChildbirthEvent *e = this;
+    owner->ev.push_back(e);
 }

@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <map>
 
 using namespace std;
 
@@ -72,6 +73,19 @@ void processDay(Date d)
                     lookForPartners(it, d);
                 if(one_in(5))
                     lookForSexyTime(it, d);
+
+                /*auto s = it->sched.find(d);
+                if(s != it->sched.end())
+                    cout << "Found scheduled event today, " << d.pp() << endl;
+                */
+
+                // Look for scheduled events today
+                for(auto s : it->sched) {
+                    if(s->getDate() == d) {
+                        cout << "Found scheduled event today, " << d.pp() << " owner is " << it->getName() << endl;
+                        s->execute();
+                    }
+                }
             }
         }
 

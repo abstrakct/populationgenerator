@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <memory>
+#include <map>
 
 // Forward declarations
 class PersonalEvent;
@@ -36,7 +37,9 @@ class Person : public std::enable_shared_from_this<Person> {
         
 	public:
 
-        std::vector<PersonalEvent*> ev;         // TODO: change to map (?) for easier lookup!!??? wouldn't work for multiple marriages etc.
+        std::vector<PersonalEvent*> ev;         // TODO: shared_ptr?? // TODO: change to map (?) for easier lookup!!??? wouldn't work for multiple marriages etc.
+        std::vector<PersonalEvent*> sched;
+        //std::map<Date, PersonalEvent*> sched;   // Scheduled events! mapped by date
 
 		std::string getName();
 		void setName(Name n) { name.set(n); };

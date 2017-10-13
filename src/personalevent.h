@@ -110,7 +110,7 @@ class ChildbirthEvent : public PersonalEvent {
     private:
         std::shared_ptr<Person> otherParent;
     public:
-        ChildbirthEvent(std::shared_ptr<Person> o, Date d, std::shared_ptr<Person> other) : PersonalEvent(o, d, etPregnant) { otherParent = other; };
+        ChildbirthEvent(std::shared_ptr<Person> o, Date d, std::shared_ptr<Person> other) : PersonalEvent(o, d, etChildbirth) { otherParent = other; };
 
         std::string describe();
         void execute();
