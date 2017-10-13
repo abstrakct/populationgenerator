@@ -74,9 +74,9 @@ void PregnantEvent::execute()
 std::string ChildbirthEvent::describe()
 {
     std::stringstream s;
-    if(owner->getGender() == female)
+    if(owner->getGender() == female && owner->isAlive(date))
         s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " gave birth to a child." << endl;
-    if(owner->getGender() == male)
+    if(owner->getGender() == male && owner->getSpouse()->isAlive(date))
         s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife gave birth to a child." << endl;
     std::string ret = s.str();
     return ret;

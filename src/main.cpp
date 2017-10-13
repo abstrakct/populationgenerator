@@ -82,7 +82,7 @@ void processDay(Date d)
                 // Look for scheduled events today
                 for(auto s : it->sched) {
                     if(s->getDate() == d) {
-                        cout << "Found scheduled event today, " << d.pp() << " owner is " << it->getName() << endl;
+                        //cout << "Found scheduled event today, " << d.pp() << " owner is " << it->getName() << endl;
                         s->execute();
                     }
                 }

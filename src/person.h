@@ -46,6 +46,7 @@ class Person : public std::enable_shared_from_this<Person> {
         std::string getFamilyName() { return name.getFamily(); };
         void setAlive(bool b = true) { alive = b; };
         bool isAlive() { return alive; };
+        bool isAlive(Date d) { return (d < getDeathDate()); };
 		void setGender(Gender g) { gender = g; };
 		Gender getGender() { return gender; };
 		void setBornHere(bool b) { bornHere = b; };

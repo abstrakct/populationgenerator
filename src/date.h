@@ -45,6 +45,13 @@ class Date {
                 return false;
         };
 
+        friend bool operator<=(Date lhs, Date rhs) {
+            if(lhs.year <= rhs.year && lhs.month <= rhs.month && lhs.day <= rhs.day)
+                return true;
+            else
+                return false;
+        };
+
         friend bool operator==(Date lhs, Date rhs) {
             if(lhs.year == rhs.year && lhs.month == rhs.month && lhs.day == rhs.day)
                 return true;

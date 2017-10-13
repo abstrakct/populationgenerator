@@ -41,7 +41,7 @@ void lookForPartners(shared_ptr<Person> p, Date d)
 
 void lookForSexyTime(shared_ptr<Person> p, Date d)
 {
-    if(p->isMarried() && fiftyfifty()) {      // could be simulated in more detail or more stastically accurate, but, well, lol, it's probably good enough!
+    if(p->isMarried() && p->getSpouse()->isAlive() && fiftyfifty()) {      // could be simulated in more detail or more stastically accurate, but, well, lol, it's probably good enough! At least there's no necrophilia.
         p->fuck(p->getSpouse(), d);
         //cout << d.pp() << ": " << p->getName() << " got Sexy Time with " << p->getSpouse()->getName() << "!" << endl;
     }
