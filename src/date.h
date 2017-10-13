@@ -27,6 +27,12 @@ class Date {
             return Date(year, month, day);
         };
         
+        Date& operator+=(const int rhs) {
+            for(int i = 0; i < rhs; i++)
+                incDay();
+            return *this;
+        };
+        
         std::string pp();  // pretty print
 };
 
