@@ -7,7 +7,7 @@ std::string BirthEvent::describe()
 {
     std::stringstream s;
 
-    if(owner->getGender() == male)
+    if(owner->getGender() == male || (owner->getGender() == female && !owner->isMarried()))
         s << owner->getName() << " was born " << date.pp() << "." << std::endl;
     if(owner->getGender() == female && owner->isMarried())
         s << owner->getName() << ", née " << owner->getFamilyName() << ", was born " << date.pp() << "." << std::endl;
@@ -60,9 +60,9 @@ std::string PregnantEvent::describe()
 {
     std::stringstream s;
     if(owner->getGender() == female)
-        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " became pregnant." << endl;
+        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " got pregnant." << endl;
     if(owner->getGender() == male)
-        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife became pregnant." << endl;
+        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife got pregnant." << endl;
     std::string ret = s.str();
     return ret;
 }
@@ -84,6 +84,7 @@ std::string ChildbirthEvent::describe()
 
 void ChildbirthEvent::execute()
 {
-    ChildbirthEvent *e = this;
-    owner->ev.push_back(e);
+    owner->ev.emplace_back(new ChildbirthEvent(this->owner, this->getDate(), this->otherParent));
+    owner->getSpouse()->ev.emplace_back(new ChildbirthEvent(this->owner->getSpouse(), this->getDate(), this->owner));
+    owner->setPregnant(false);
 }

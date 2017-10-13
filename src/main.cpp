@@ -45,8 +45,6 @@ void setupInitialPopulation()
 
 void lookForNewPeople(Date d)
 {
-    int num = ri(1, 2);
-    for(int i = 0; i < num; ++i) {
         std::shared_ptr<Person> p;
         p = make_shared<Person>();
 
@@ -54,7 +52,6 @@ void lookForNewPeople(Date d)
         p->setBornHere(false);
         p->setMovedYear(d.getYear());
         pop.addPerson(p);
-    }
 }
 
 void processDay(Date d)
@@ -91,8 +88,8 @@ void processDay(Date d)
 
         // Step 2:
         // Check for external events
-        //if(one_in(250))
-        //    lookForNewPeople(d);
+        if(one_in(3000))
+            lookForNewPeople(d);
         
         finishedForTheDay = true;
     }
@@ -113,13 +110,19 @@ void simulateasdf()
 {
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-	seed = time(0);
+    seed = time(0);
+
+    if(argc > 1) {
+        seed = atoi(argv[1]);
+    }
+
 	rng.seed(seed);
 
 	n = new NameGenerator();
 
+    cout << endl << endl << " SEED: " << seed;
     cout << endl << endl << " P O P U L A T I O N   G E N E R A T O R " << endl << endl;
 
     setupInitialPopulation();

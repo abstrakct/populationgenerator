@@ -188,16 +188,12 @@ void Person::kill(Date d)
 void Person::impregnate(Date d)
 {
     PregnantEvent *preggers = new PregnantEvent(shared_from_this(), d, spouse);
-    PregnantEvent *preggerspouse = new PregnantEvent(spouse, d, shared_from_this());
     setPregnant(true);
     ev.push_back(preggers);
-    spouse->ev.push_back(preggerspouse);
 
     Date cbd = d + (268 + ri(-10, 10));         // 268 is the median length of a human pregnancy, and 70% give birth within +/- 10 days of this date, statistically. Or so I've read.
     ChildbirthEvent *cb = new ChildbirthEvent(shared_from_this(), cbd, spouse);
-    ChildbirthEvent *cbspouse = new ChildbirthEvent(spouse, cbd, shared_from_this());
     sched.push_back(cb);
-    spouse->sched.push_back(cbspouse);
 }
 
 // Make a person a widow(er)
@@ -273,8 +269,7 @@ void Person::describe()
             }
             if(it->getType() == etPregnant) {
                 PregnantEvent *preg = dynamic_cast<PregnantEvent*>(it);
-                if(preg)
-                    description << preg->describe();
+                description << preg->describe();
             }
             if(it->getType() == etChildbirth) {
                 ChildbirthEvent *cb = dynamic_cast<ChildbirthEvent*>(it);

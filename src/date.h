@@ -38,19 +38,27 @@ class Date {
             return lhs;
         };
 
-        friend bool operator<(Date lhs, Date rhs) {
-            if(lhs.year <= rhs.year && lhs.month <= rhs.month && lhs.day < rhs.day)
+        inline bool operator<(Date rhs) {
+            if(this->year < rhs.year)
                 return true;
-            else
-                return false;
+            if(this->year == rhs.year) {
+                if(this->month < rhs.month)
+                    return true;
+                if(this->month == rhs.month) {
+                    if(this->day <= rhs.day)
+                        return true;
+                }
+            }
+
+            return false;
         };
 
-        friend bool operator<=(Date lhs, Date rhs) {
+        /*friend bool operator<=(Date lhs, Date rhs) {
             if(lhs.year <= rhs.year && lhs.month <= rhs.month && lhs.day <= rhs.day)
                 return true;
             else
                 return false;
-        };
+        };*/
 
         friend bool operator==(Date lhs, Date rhs) {
             if(lhs.year == rhs.year && lhs.month == rhs.month && lhs.day == rhs.day)
