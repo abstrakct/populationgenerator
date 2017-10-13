@@ -39,65 +39,16 @@ void lookForPartners(shared_ptr<Person> p, Date d)
     }
 }
 
-
-// Methods for Person class
-void Person::describe()
+void lookForSexyTime(shared_ptr<Person> p, Date d)
 {
-    std::stringstream description;
-
-    //description << getName() << " was born in " << getBirthYear() << ". ";
-    
-    for(auto it : ev) {     // TODO: find? search? separate methods for getting birth event etc?
-        if(it->getType() == etBirth) {
-            BirthEvent *b = dynamic_cast<BirthEvent*>(it);
-            description << b->describe();
-        }
+    if(p->isMarried() && fiftyfifty()) {
+        p->fuck(p->getSpouse(), d);
+        //cout << d.pp() << ": " << p->getName() << " got Sexy Time with " << p->getSpouse()->getName() << "!" << endl;
     }
-
-    if(mother == NULL && father == NULL) {
-        description << "It is not known who " << getPossessivePronoun() << " parents were." << std::endl;
-    } else {
-        if(mother)
-            description << getName() << "'s mother was " << mother->getName() << std::endl;
-        if(father)
-            description << getName() << "'s father was " << father->getName() << std::endl;
-    }
-
-    if(bornHere) {
-        description << cap(getPersonalPronoun()) << " was born here in Collinsport." << std::endl;
-    } else {
-        description << cap(getPersonalPronoun()) << " moved to Collinsport in " << getMovedYear() << "." << std::endl;
-    }
-
-
-    if(isMarried()) {
-        for(auto it : ev) {
-            if(it->getType() == etMarriage) {
-                MarriageEvent *m = dynamic_cast<MarriageEvent*>(it);
-                description << m->describe();
-            }
-            if(it->getType() == etWidow) {
-                WidowEvent *w = dynamic_cast<WidowEvent*>(it);
-                description << w->describe();
-            }
-        }
-    } else {
-        description << cap(getPersonalPronoun()) << " never married." << std::endl;
-    }
-
-    if(!isAlive()) {
-        for(auto it : ev) {
-            if(it->getType() == etDeath) {
-                DeathEvent *dev = dynamic_cast<DeathEvent*>(it);
-                description << dev->describe();
-            }
-        }
-    }
-
-    description << std::endl;
-    std::cout << description.str();
 }
 
+
+// Methods for Person class
 void Person::generateRandom()
 {
     if(fiftyfifty()) {
@@ -188,6 +139,18 @@ int Person::getAge(Date d) {
     return age;
 }
 
+// fuck, marry, kill ... heh
+
+void Person::fuck(std::shared_ptr<Person> partner, Date d)
+{
+    if(getAge(d) <= 50 && one_in(300)) {
+        if(gender == male && partner->getGender() == female && !partner->isPregnant())
+            partner->impregnate(d);
+        if(gender == female && partner->getGender() == male && !isPregnant())
+            impregnate(d);
+    }
+}
+
 void Person::marry(std::shared_ptr<Person> spouse, Date date)
 {
     if(married) {
@@ -209,6 +172,13 @@ void Person::kill(Date d)
 
     if(married && spouse->isAlive())
         spouse->makeWidow(d);
+}
+
+void Person::impregnate(Date d)
+{
+    PregnantEvent *preggers = new PregnantEvent(shared_from_this(), d, spouse);
+    setPregnant(true);
+    ev.push_back(preggers);
 }
 
 // Make a person a widow(er)
@@ -246,3 +216,65 @@ void Person::checkUnexpectedDeath(Date d)
         }
     }
 }
+
+void Person::describe()
+{
+    std::stringstream description;
+
+    //description << getName() << " was born in " << getBirthYear() << ". ";
+    
+    for(auto it : ev) {     // TODO: find? search? separate methods for getting birth event etc?
+        if(it->getType() == etBirth) {
+            BirthEvent *b = dynamic_cast<BirthEvent*>(it);
+            description << b->describe();
+        }
+    }
+
+    if(mother == NULL && father == NULL) {
+        description << "It is not known who " << getPossessivePronoun() << " parents were." << std::endl;
+    } else {
+        if(mother)
+            description << getName() << "'s mother was " << mother->getName() << std::endl;
+        if(father)
+            description << getName() << "'s father was " << father->getName() << std::endl;
+    }
+
+    if(bornHere) {
+        description << cap(getPersonalPronoun()) << " was born here in Collinsport." << std::endl;
+    } else {
+        description << cap(getPersonalPronoun()) << " moved to Collinsport in " << getMovedYear() << "." << std::endl;
+    }
+
+
+    if(isMarried()) {
+        for(auto it : ev) {
+            if(it->getType() == etMarriage) {
+                MarriageEvent *m = dynamic_cast<MarriageEvent*>(it);
+                description << m->describe();
+            }
+            if(it->getType() == etPregnant) {
+                PregnantEvent *preg = dynamic_cast<PregnantEvent*>(it);
+                description << preg->describe();
+            }
+            if(it->getType() == etWidow) {
+                WidowEvent *w = dynamic_cast<WidowEvent*>(it);
+                description << w->describe();
+            }
+        }
+    } else {
+        description << cap(getPersonalPronoun()) << " never married." << std::endl;
+    }
+
+    if(!isAlive()) {
+        for(auto it : ev) {
+            if(it->getType() == etDeath) {
+                DeathEvent *dev = dynamic_cast<DeathEvent*>(it);
+                description << dev->describe();
+            }
+        }
+    }
+
+    description << std::endl;
+    std::cout << description.str();
+}
+

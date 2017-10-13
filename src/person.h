@@ -11,6 +11,7 @@
 class PersonalEvent;
 class Person;
 void lookForPartners(shared_ptr<Person> p, Date d);
+void lookForSexyTime(shared_ptr<Person> p, Date d);
 
 enum Gender {
     male,
@@ -24,7 +25,7 @@ class Person : public std::enable_shared_from_this<Person> {
 		Gender gender;
 		bool bornHere;
 		int movedYear;
-		bool married;
+		bool married, pregnant = false;
 		bool alive = true;
 
         std::shared_ptr<Person> mother = NULL;
@@ -50,6 +51,8 @@ class Person : public std::enable_shared_from_this<Person> {
 		int  getMovedYear() { return movedYear; };
 		void setMarried(bool b) { married = b; };
 		bool isMarried() { return married; };
+		void setPregnant(bool b) { pregnant = b; };
+		bool isPregnant() { return pregnant; };
 		void setSpouse(std::shared_ptr<Person> p) { spouse = p; };
         std::shared_ptr<Person> getSpouse() { return spouse; };
         void makeWidow(Date d);
@@ -86,8 +89,10 @@ class Person : public std::enable_shared_from_this<Person> {
 		Date getBirthday();
 		int  getMarriageYear();
         Date getMarriageDate();
+        void fuck(std::shared_ptr<Person> partner, Date d);
 		void marry(std::shared_ptr<Person> spouse, Date date);
 		void kill(Date d);
+		void impregnate(Date d);
 
 		// Checks for various things
 		void checkOldAge(Date d);

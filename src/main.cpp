@@ -56,66 +56,32 @@ void lookForNewPeople(Date d)
     }
 }
 
-/*
-void lookForPartners(Date d)
-{
-    int year = d.getYear();
-
-    for(auto m : pop.getAllUnmarried()) {             // no adultery supported for now!
-        for(auto f : pop.getAllUnmarried()) {
-            if(year >= m->getBirthYear() + 18) {
-                if(f != m) {
-                    if(m->getGender() == male && f->getGender() == female) {
-                        if(year >= f->getBirthYear() + 18) {
-                            if(!f->isMarried()) {
-                                if(one_in(70) && f->getAge(year) <= (m->getAge(year) + ri(-3,3))) {
-                                    m->marry(f, year);
-                                    f->marry(m, year);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if(year >= f->getBirthYear() + 18) {
-                if(m != f) {
-                    if(f->getGender() == female && m->getGender() == male) {
-                        if(year >= m->getBirthYear() + 18) {
-                            if(!m->isMarried()) {
-                                if(one_in(70) && f->getAge(year) <= (m->getAge(year) + ri(-3,3))) {
-                                    f->marry(m, year);
-                                    m->marry(f, year);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-*/
-
 void processDay(Date d)
 {
-    //int year = d.getYear();
+    bool finishedForTheDay = false;
 
-    // Step 1:
-    // Go through all the people, see if something should be done to anyone...
-    for(auto it : pop.getAll()) {
-        if(it->isAlive()) {
-            if(one_in(250))
-                it->checkUnexpectedDeath(d);
-            if(!it->isMarried() && it->getAge(d) >= 18 && one_in(30))
-                lookForPartners(it, d);
+    while(!finishedForTheDay) {
+
+        // Step 1:
+        // Go through all the people, see if something should be done to anyone...
+        for(auto it : pop.getAll()) {
+            if(it->isAlive()) {
+                if(one_in(250))
+                    it->checkUnexpectedDeath(d);
+                if(!it->isMarried() && it->getAge(d) >= 18 && one_in(30))
+                    lookForPartners(it, d);
+                if(one_in(5))
+                    lookForSexyTime(it, d);
+            }
         }
-    }
 
-    // Step 2:
-    // Check for external events
-    //if(one_in(250))
-    //    lookForNewPeople(d);
+        // Step 2:
+        // Check for external events
+        //if(one_in(250))
+        //    lookForNewPeople(d);
+        
+        finishedForTheDay = true;
+    }
 }
 
 void simulate()

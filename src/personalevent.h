@@ -11,15 +11,21 @@
 
 class Person;
 
+// things to maybe add:
+// engagement (not so interesting, but flavor)
+// got pregnant
+// childbirth (absolutely necessary)
+// 
 enum eventType {
     etBirth,
     etMarriage,
     etDeath,
-    etWidow
+    etWidow,
+    etPregnant
 };
 
 class PersonalEvent {
-    private:
+    protected:
         Date date;
         eventType type;
     public:
@@ -84,6 +90,16 @@ class WidowEvent : public PersonalEvent {
 
     public:
         WidowEvent(std::shared_ptr<Person> o, Date d) : PersonalEvent(o, d, etWidow) {};
+
+        std::string describe();
+        void execute();
+};
+
+class PregnantEvent : public PersonalEvent {
+    private:
+        std::shared_ptr<Person> otherParent;
+    public:
+        PregnantEvent(std::shared_ptr<Person> o, Date d, std::shared_ptr<Person> other) : PersonalEvent(o, d, etPregnant) { otherParent = other; };
 
         std::string describe();
         void execute();
