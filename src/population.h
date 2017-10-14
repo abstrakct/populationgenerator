@@ -13,6 +13,8 @@ class Population {
         std::vector<std::shared_ptr<Person>> pop;
     public:
         void addPerson(std::shared_ptr<Person> p);
+        std::shared_ptr<Person> spawnPerson();
+
         std::vector<std::shared_ptr<Person>> getAll();
         std::vector<std::shared_ptr<Person>> getAllUnmarried();
 };

@@ -21,8 +21,6 @@ int seed;
 const int yearzero = 1660;
 boost::random::mt19937 rng;
 NameGenerator *n;
-
-// vector<std::shared_ptr<Person>> pop;
 Population pop;
 
 
@@ -35,23 +33,21 @@ void setupInitialPopulation()
 
 	for(int i = 0; i < num; ++i) {
         std::shared_ptr<Person> p;
-	    p = make_shared<Person>();
 
+        p = pop.spawnPerson();
 	    p->generateRandom();
 	    p->setBornHere(true);
-        pop.addPerson(p);
     }
 }
 
 void lookForNewPeople(Date d)
 {
         std::shared_ptr<Person> p;
-        p = make_shared<Person>();
+        p = pop.spawnPerson();
 
         p->generateRandom();
         p->setBornHere(false);
         p->setMovedYear(d.getYear());
-        pop.addPerson(p);
 }
 
 void processDay(Date d)
@@ -76,11 +72,13 @@ void processDay(Date d)
                     cout << "Found scheduled event today, " << d.pp() << endl;
                 */
 
-                // Look for scheduled events today
+                // Look for scheduled events this person has today
                 for(auto s : it->sched) {
                     if(s->getDate() == d) {
-                        //cout << "Found scheduled event today, " << d.pp() << " owner is " << it->getName() << endl;
                         s->execute();
+                        //Person child = it->giveBirth(d);
+                        //std::shared_ptr<Person> newchild = make_shared<Person>(child);
+                        //pop.addPerson(newchild);
                     }
                 }
             }
@@ -98,7 +96,7 @@ void processDay(Date d)
 void simulate()
 {
     Date startDate = Date(yearzero + 10, 1, 1);
-    int years = 50;
+    int years = 100;
 
     for(int i = 0; i < (365 * years); i++) {
         ++startDate;

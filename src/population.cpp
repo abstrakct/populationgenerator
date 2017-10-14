@@ -7,6 +7,14 @@ void Population::addPerson(std::shared_ptr<Person> p)
     pop.push_back(p);
 }
 
+std::shared_ptr<Person> Population::spawnPerson()
+{
+    std::shared_ptr<Person> person = make_shared<Person>();
+    person->setAlive();
+    pop.push_back(person);
+    return person;
+}
+
 std::vector<std::shared_ptr<Person>> Population::getAll()
 {
     return pop;

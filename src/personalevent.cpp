@@ -2,6 +2,10 @@
 #include <string>
 #include <sstream>
 #include "personalevent.h"
+#include "population.h"
+#include "debug.h"
+
+extern Population pop;
 
 std::string BirthEvent::describe()
 {
@@ -23,7 +27,7 @@ void BirthEvent::execute()
 std::string MarriageEvent::describe()
 {
     std::stringstream s;
-    s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " got married to " << owner->getSpouse()->getName() << ", who was " << owner->getSpouse()->getAge(owner->getSpouse()->getMarriageDate()) << " years old at the time." << std::endl;
+    s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " got married to " << owner->getSpouse()->getMaidenName() << ", who was " << owner->getSpouse()->getAge(owner->getSpouse()->getMarriageDate()) << " years old at the time." << std::endl;
     std::string ret = s.str();
     return ret;
 }
@@ -74,17 +78,25 @@ void PregnantEvent::execute()
 std::string ChildbirthEvent::describe()
 {
     std::stringstream s;
-    if(owner->getGender() == female && owner->isAlive(date))
-        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " gave birth to a child." << endl;
-    if(owner->getGender() == male && owner->getSpouse()->isAlive(date))
-        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife gave birth to a child." << endl;
+    if(owner->getGender() == female)
+        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " gave birth to a child. The child was a " << (child->getGender() == male ? "boy" : "girl") << " named " << child->getMaidenName() << "." << endl;
+    if(owner->getGender() == male)
+        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife gave birth to a child. The child was a " << (child->getGender() == male ? "boy" : "girl") << " named " << child->getMaidenName() << "." << endl;
     std::string ret = s.str();
     return ret;
 }
 
 void ChildbirthEvent::execute()
 {
-    owner->ev.emplace_back(new ChildbirthEvent(this->owner, this->getDate(), this->otherParent));
-    owner->getSpouse()->ev.emplace_back(new ChildbirthEvent(this->owner->getSpouse(), this->getDate(), this->owner));
+    if(!owner->isAlive(date))
+        dbg("giving birth when not alive?!?!?!?!");
+
+    ChildbirthEvent* cbev = new ChildbirthEvent(owner, date);
+
     owner->setPregnant(false);
+    cbev->child = owner->giveBirth(date);
+    owner->ev.push_back(cbev);
+    
+    cbev->owner = owner->getSpouse();
+    owner->getSpouse()->ev.push_back(cbev);
 }

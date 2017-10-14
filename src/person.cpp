@@ -18,37 +18,29 @@ extern boost::random::mt19937 rng;
 extern NameGenerator *n;
 extern Population pop;
 
-bool agesWithinReason(int a, int b)
+// Constructors
+/*
+Person::Person(std::shared_ptr<Person> m, std::shared_ptr<Person> f, Date d)
 {
-    if((max(a, b) - min(a, b)) <= (12 + ri(-2, 2)))   // add some randomization/variability
-        return true;
-    else
-        return false;
-}
-
-void lookForPartners(shared_ptr<Person> p, Date d)
-{
-    for(auto partner : pop.getAllUnmarried()) {
-        if(partner->getGender() != p->getGender() && partner->getAge(d) >= 18 && partner->getFamilyName() != p->getFamilyName()) {     // no same sex marriages yet :/ maybe in the progressive future. On the bright side, also no children getting married or people with the same family name (the latter are assumed to be related).
-            if((agesWithinReason(partner->getAge(d), p->getAge(d)))) {
-                p->marry(partner, d);
-                partner->marry(p, d);
-                return;
-            }
-        }
+    if(fiftyfifty()) {
+        setName(n->generateName(true));
+        setGender(male);
+    } else {
+        setName(n->generateName(false));
+        setGender(female);
     }
-}
 
-void lookForSexyTime(shared_ptr<Person> p, Date d)
-{
-    if(p->isMarried() && p->getSpouse()->isAlive() && fiftyfifty()) {      // could be simulated in more detail or more stastically accurate, but, well, lol, it's probably good enough! At least there's no necrophilia.
-        p->fuck(p->getSpouse(), d);
-        //cout << d.pp() << ": " << p->getName() << " got Sexy Time with " << p->getSpouse()->getName() << "!" << endl;
-    }
-}
+    mother = m;
+    father = f;
 
+    name.setFamily(father->getFamilyName());
+    BirthEvent *b = new BirthEvent(shared_from_this(), d);
+    ev.push_back(b);
+}
+*/
 
 // Methods for Person class
+
 void Person::generateRandom()
 {
     if(fiftyfifty()) {
@@ -65,6 +57,20 @@ void Person::generateRandom()
     Date d = Date(birthyear, birthmonth, birthday);
 
     BirthEvent *b = new BirthEvent(shared_from_this(), d);
+    ev.push_back(b);
+}
+
+void Person::generateRandom(Date bd)
+{
+    if(fiftyfifty()) {
+        setName(n->generateName(true));
+        setGender(male);
+    } else {
+        setName(n->generateName(false));
+        setGender(female);
+    }
+
+    BirthEvent *b = new BirthEvent(shared_from_this(), bd);
     ev.push_back(b);
 }
 
@@ -178,7 +184,12 @@ void Person::marry(std::shared_ptr<Person> spouse, Date date)
 void Person::kill(Date d)
 {
     setAlive(false);
-    DeathEvent *event = new DeathEvent(shared_from_this(), d);
+    DeathEvent *event;
+
+    if(getAge(d) >= 80 && fiftyfifty())
+        event = new DeathEvent(shared_from_this(), d, "died of old age");
+    else
+        event = new DeathEvent(shared_from_this(), d);
     ev.push_back(event);
 
     if(married && spouse->isAlive())
@@ -192,8 +203,19 @@ void Person::impregnate(Date d)
     ev.push_back(preggers);
 
     Date cbd = d + (268 + ri(-10, 10));         // 268 is the median length of a human pregnancy, and 70% give birth within +/- 10 days of this date, statistically. Or so I've read.
-    ChildbirthEvent *cb = new ChildbirthEvent(shared_from_this(), cbd, spouse);
+    ChildbirthEvent *cb = new ChildbirthEvent(shared_from_this(), cbd);
     sched.push_back(cb);
+}
+
+std::shared_ptr<Person> Person::giveBirth(Date d)
+{
+    std::shared_ptr<Person> child;
+    child = pop.spawnPerson();
+    child->setParents(shared_from_this(), getSpouse()->shared_from_this());
+    child->generateRandom(d);
+    child->setBornHere(true);
+    child->name.setFamily(child->father->getFamilyName());
+    return child;
 }
 
 // Make a person a widow(er)
@@ -281,7 +303,8 @@ void Person::describe()
             }
         }
     } else {
-        description << cap(getPersonalPronoun()) << " never married." << std::endl;
+        if(getAge(getDeathDate()) >= 18)
+            description << cap(getPersonalPronoun()) << " never married." << std::endl;
     }
 
     if(!isAlive()) {
@@ -296,4 +319,37 @@ void Person::describe()
     description << std::endl;
     std::cout << description.str();
 }
+
+
+// Useful functions
+
+bool agesWithinReason(int a, int b)
+{
+    if((max(a, b) - min(a, b)) <= (12 + ri(-2, 2)))   // add some randomization/variability
+        return true;
+    else
+        return false;
+}
+
+void lookForPartners(shared_ptr<Person> p, Date d)
+{
+    for(auto partner : pop.getAllUnmarried()) {
+        if(partner->getGender() != p->getGender() && partner->getAge(d) >= 18 && partner->getFamilyName() != p->getFamilyName()) {     // no same sex marriages yet :/ maybe in the progressive future. On the bright side, also no children getting married or people with the same family name (the latter are assumed to be related).
+            if((agesWithinReason(partner->getAge(d), p->getAge(d)))) {
+                p->marry(partner, d);
+                partner->marry(p, d);
+                return;
+            }
+        }
+    }
+}
+
+void lookForSexyTime(shared_ptr<Person> p, Date d)
+{
+    if(p->isMarried() && p->getSpouse()->isAlive() && fiftyfifty()) {      // could be simulated in more detail or more stastically accurate, but, well, lol, it's probably good enough! At least there's no necrophilia.
+        p->fuck(p->getSpouse(), d);
+        //cout << d.pp() << ": " << p->getName() << " got Sexy Time with " << p->getSpouse()->getName() << "!" << endl;
+    }
+}
+
 

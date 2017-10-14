@@ -41,12 +41,19 @@ class Person : public std::enable_shared_from_this<Person> {
         std::vector<PersonalEvent*> sched;
         //std::map<Date, PersonalEvent*> sched;   // Scheduled events! mapped by date
 
+        Person() = default;
+
 		std::string getName();
 		void setName(Name n) { name.set(n); };
         std::string getFamilyName() { return name.getFamily(); };
+        std::string getMaidenName() { return name.getMaidenName(); };
         void setAlive(bool b = true) { alive = b; };
         bool isAlive() { return alive; };
-        bool isAlive(Date d) { return (d < getDeathDate()); };
+        bool isAlive(Date d) {
+            if(getDeathDate() == Date(0, 0, 0))      // person isn't dead!
+                return true;
+            return (d < getDeathDate());
+        };
 		void setGender(Gender g) { gender = g; };
 		Gender getGender() { return gender; };
 		void setBornHere(bool b) { bornHere = b; };
@@ -58,10 +65,12 @@ class Person : public std::enable_shared_from_this<Person> {
 		void setPregnant(bool b) { pregnant = b; };
 		bool isPregnant() { return pregnant; };
 		void setSpouse(std::shared_ptr<Person> p) { spouse = p; };
+		void setParents(std::shared_ptr<Person> mo, std::shared_ptr<Person> fa) { mother = mo; father = fa; };
         std::shared_ptr<Person> getSpouse() { return spouse; };
         void makeWidow(Date d);
         Date getWidowDate();
         Date getDeathDate();
+        std::shared_ptr<Person> giveBirth(Date d);
 
         std::string getPossessivePronoun() { 
             if(gender == male)
@@ -89,6 +98,7 @@ class Person : public std::enable_shared_from_this<Person> {
 
 		void describe();
 		void generateRandom();
+		void generateRandom(Date bd);
 		int  getBirthYear();
 		Date getBirthday();
 		int  getMarriageYear();
