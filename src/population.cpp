@@ -46,6 +46,18 @@ std::vector<std::shared_ptr<Person>> Population::getAllDead()
     return ret;
 }
 
+std::vector<std::shared_ptr<Person>> Population::getAllAlive()
+{
+    std::vector<std::shared_ptr<Person>> ret;
+
+    for(auto it : pop) {
+        if(it->isAlive())
+            ret.push_back(it);
+    }
+
+    return ret;
+}
+
 std::list<shared_ptr<Person>> Population::getAllSortedList()
 {
     std::list<shared_ptr<Person>> ret;

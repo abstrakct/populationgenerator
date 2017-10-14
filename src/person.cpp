@@ -264,7 +264,7 @@ void Person::deathForVariousReasons(Date d)
     } else if(i == 4) {
         kill(d, "was killed in an accident");
         stat.deathsAccident++;
-    } else if(getAge(d) >= 4 && (i == 5 || i == 6)) {     // let's not have babies accidentally drown. But a 4 yo child or older (or even a little younger) could potentiall wander off and fall into the ocean and drown. Life is rough.
+    } else if(getAge(d) >= 4 && (i == 5 || i == 6)) {     // let's not have babies accidentally drown. But a 4yo child or older (or even a little younger) could potentially wander off and fall into the ocean and drown. Life is rough.
         kill(d, "drowned at sea");
         stat.deathsDrowned++;
     } else {

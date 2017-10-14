@@ -28,7 +28,7 @@ NameGenerator *n;
 Population pop;
 ConfigData c;
 
-enum OutputFormat { outEverything, outDeaths, outBirths };
+enum OutputFormat { outEverything, outDeaths, outBirths, outAlive };
 
 struct Statistics stat;
 OutputFormat out;
@@ -38,11 +38,12 @@ int parseCommandLineOptions(int argc, char **argv)
     try {
         po::options_description desc("Allowed options");
         desc.add_options()
+            ("alive,a", "output full description, but only those alive at the end of simulation")
+            ("births,b", "output only births")
+            ("deaths,d", "output only deaths and their causes")
             ("help,h", "show this help message")
             ("seed,s", po::value<long>(), "set seed for RNG")
             ("version,v", "show program version")
-            ("deaths,d", "output only deaths and their causes")
-            ("births,b", "output only births")
             ;
         
         po::variables_map varmap;
@@ -66,6 +67,9 @@ int parseCommandLineOptions(int argc, char **argv)
         }
         if(varmap.count("births")) {
             out = outBirths;
+        }
+        if(varmap.count("alive")) {
+            out = outAlive;
         }
     } catch (exception& e) {
         cerr << "error: " << e.what() << endl;
@@ -209,10 +213,15 @@ int main(int argc, char **argv)
     setupInitialPopulation();
     simulate();
 
-    // TODO: move to separate functions
     // idea: output to textfile! name yyyymmddhhmmss or something.
     if(out == outEverything) {
         for(auto it : pop.getAll()) {
+            it->describe(stat.end);
+        }
+    }
+
+    if(out == outAlive) {
+        for(auto it : pop.getAllAlive()) {
             it->describe(stat.end);
         }
     }

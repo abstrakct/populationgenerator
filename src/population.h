@@ -18,6 +18,7 @@ class Population {
 
         std::vector<std::shared_ptr<Person>> getAll();
         std::vector<std::shared_ptr<Person>> getAllUnmarried();
+        std::vector<std::shared_ptr<Person>> getAllAlive();
         std::vector<std::shared_ptr<Person>> getAllDead();
         std::list<std::shared_ptr<Person>>   getAllSortedList();
 };
