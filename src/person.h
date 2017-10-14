@@ -25,7 +25,6 @@ class Person : public std::enable_shared_from_this<Person> {
 	    Name name;
 		Gender gender;
 		bool bornHere;
-		int movedYear;
 		bool married, pregnant = false;
 		bool alive = true;
 
@@ -58,8 +57,8 @@ class Person : public std::enable_shared_from_this<Person> {
 		Gender getGender() { return gender; };
 		void setBornHere(bool b) { bornHere = b; };
 		bool getBornHere() { return bornHere; };
-		void setMovedYear(int y) { movedYear = y; };
-		int  getMovedYear() { return movedYear; };
+		//void setMovedYear(int y) { movedYear = y; };
+		//int  getMovedYear() { return movedYear; };
 		void setMarried(bool b) { married = b; };
 		bool isMarried() { return married; };
 		void setPregnant(bool b) { pregnant = b; };

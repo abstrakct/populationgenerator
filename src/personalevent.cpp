@@ -92,11 +92,27 @@ void ChildbirthEvent::execute()
         dbg("giving birth when not alive?!?!?!?!");
 
     ChildbirthEvent* cbev = new ChildbirthEvent(owner, date);
+    ChildbirthEvent* cbevf = new ChildbirthEvent(owner->getSpouse(), date);
 
     owner->setPregnant(false);
     cbev->child = owner->giveBirth(date);
     owner->ev.push_back(cbev);
     
-    cbev->owner = owner->getSpouse();
-    owner->getSpouse()->ev.push_back(cbev);
+    cbevf->owner = owner->getSpouse();
+    cbevf->child = cbev->child;
+    owner->getSpouse()->ev.push_back(cbevf);
 }
+
+std::string MigrationEvent::describe()
+{
+    std::stringstream s;
+    if(owner->isAlive(date))
+        s << "On " << date.pp() << " " << owner->getPersonalPronoun() << " moved to Collinsport." << endl;
+    std::string ret = s.str();
+    return ret;
+}
+
+void MigrationEvent::execute()
+{
+}
+

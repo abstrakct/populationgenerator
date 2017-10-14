@@ -279,7 +279,12 @@ void Person::describe()
     if(bornHere) {
         description << cap(getPersonalPronoun()) << " was born here in Collinsport." << std::endl;
     } else {
-        description << cap(getPersonalPronoun()) << " moved to Collinsport in " << getMovedYear() << "." << std::endl;
+        for(auto it : ev) {
+            if(it->getType() == etMigration) {
+                MigrationEvent *m = dynamic_cast<MigrationEvent*>(it);
+                description << m->describe();
+            }
+        }
     }
 
 

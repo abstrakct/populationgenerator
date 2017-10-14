@@ -40,14 +40,21 @@ void setupInitialPopulation()
     }
 }
 
-void lookForNewPeople(Date d)
+void lookForImmigrants(Date d)
 {
         std::shared_ptr<Person> p;
         p = pop.spawnPerson();
 
-        p->generateRandom();
+        int birthyear = d.getYear() + ri(-38, -18);       // immigrants are between 18 - 38 years old
+        int birthmonth = ri(1, 12);
+        int birthday = ri(1,28);
+        Date bd = Date(birthyear, birthmonth, birthday);
+
+        p->generateRandom(bd);
         p->setBornHere(false);
-        p->setMovedYear(d.getYear());
+        MigrationEvent *mig;
+        mig = new MigrationEvent(p, d);
+        p->ev.push_back(mig);
 }
 
 void processDay(Date d)
@@ -67,18 +74,10 @@ void processDay(Date d)
                 if(one_in(5))
                     lookForSexyTime(it, d);
 
-                /*auto s = it->sched.find(d);
-                if(s != it->sched.end())
-                    cout << "Found scheduled event today, " << d.pp() << endl;
-                */
-
                 // Look for scheduled events this person has today
                 for(auto s : it->sched) {
                     if(s->getDate() == d) {
                         s->execute();
-                        //Person child = it->giveBirth(d);
-                        //std::shared_ptr<Person> newchild = make_shared<Person>(child);
-                        //pop.addPerson(newchild);
                     }
                 }
             }
@@ -87,7 +86,7 @@ void processDay(Date d)
         // Step 2:
         // Check for external events
         if(one_in(3000))
-            lookForNewPeople(d);
+            lookForImmigrants(d);
         
         finishedForTheDay = true;
     }
@@ -102,10 +101,6 @@ void simulate()
         ++startDate;
         processDay(startDate);
     }
-}
-
-void simulateasdf()
-{
 }
 
 int main(int argc, char *argv[])
