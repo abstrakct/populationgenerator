@@ -93,6 +93,7 @@ void printStatistics(struct Statistics stat)
     cout << "Number of deaths:           " << stat.deaths << endl;
     cout << "Number of deaths (old age): " << stat.deathsOldAge << endl;
     cout << "Number of deaths (unknown): " << stat.deathsUnknown << endl;
+    cout << "Number of people alive:     " << (stat.totalNumberOfPeople - stat.deaths) << endl;
     cout << endl;
 }
 

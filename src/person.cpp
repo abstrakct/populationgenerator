@@ -7,6 +7,7 @@
 #include "name.h"
 #include "date.h"
 #include "population.h"
+#include "config.h"
 
 // Boost random number library
 #include <boost/random/mersenne_twister.hpp>
@@ -18,6 +19,7 @@ extern boost::random::mt19937 rng;
 extern NameGenerator *n;
 extern Population pop;
 extern struct Statistics stat;
+extern ConfigData c;
 
 // Methods for Person class
 
@@ -243,7 +245,7 @@ void Person::deathForUnknownReasons(Date d)
     stat.deathsUnknown++;
 }
 
-void Person::describe()
+void Person::describe(Date d)
 {
     std::stringstream description;
 
@@ -255,13 +257,16 @@ void Person::describe()
         }
     }
 
-    if(mother == NULL && father == NULL) {
+    if(!mother && !father) {
         description << "It is not known who " << getPossessivePronoun() << " parents were." << std::endl;
     } else {
+        if(mother && father) {
+            description << cap(getPossessivePronoun()) << " parents were " << mother->getGivenName() << " and " << father->getName() << "." << std::endl;
+        } /*else if(mother && !father)
         if(mother)
             description << getName() << "'s mother was " << mother->getName() << std::endl;
         if(father)
-            description << getName() << "'s father was " << father->getName() << std::endl;
+            description << getName() << "'s father was " << father->getName() << std::endl;*/
     }
 
     if(bornHere) {
@@ -296,11 +301,13 @@ void Person::describe()
             }
         }
     } else {
-        if(getAge(getDeathDate()) >= 18)
+        if(getAge(getDeathDate()) >= c.ageAdult)
             description << cap(getPersonalPronoun()) << " never married." << std::endl;
     }
 
-    if(!isAlive()) {
+    if(isAlive()) {
+        description << "As of " << d.pp() << " " << getPersonalPronoun() << " is " << getAge(d) << " years old and still alive." << std::endl;
+    } else {
         for(auto it : ev) {
             if(it->getType() == etDeath) {
                 DeathEvent *dev = dynamic_cast<DeathEvent*>(it);
@@ -327,7 +334,7 @@ bool agesWithinReason(int a, int b)
 void lookForPartners(shared_ptr<Person> p, Date d)
 {
     for(auto partner : pop.getAllUnmarried()) {
-        if(partner->getGender() != p->getGender() && partner->getAge(d) >= 18 && partner->getFamilyName() != p->getFamilyName()) {     // no same sex marriages yet :/ maybe in the progressive future. On the bright side, also no children getting married or people with the same family name (the latter are assumed to be related).
+        if(partner->getGender() != p->getGender() && partner->getAge(d) >= c.ageAdult && partner->getFamilyName() != p->getFamilyName()) {     // no same sex marriages yet :/ maybe in the progressive future. On the bright side, also no children getting married or people with the same family name (the latter are assumed to be related).
             if((agesWithinReason(partner->getAge(d), p->getAge(d)))) {
                 p->marry(partner, d);
                 partner->marry(p, d);

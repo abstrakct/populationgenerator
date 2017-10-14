@@ -46,6 +46,7 @@ class Person : public std::enable_shared_from_this<Person> {
 		void setName(Name n) { name.set(n); };
         std::string getFamilyName() { return name.getFamily(); };
         std::string getMaidenName() { return name.getMaidenName(); };
+        std::string getGivenName() { return name.getGiven(); };
         void setAlive(bool b = true) { alive = b; };
         bool isAlive() { return alive; };
         bool isAlive(Date d) {
@@ -95,7 +96,7 @@ class Person : public std::enable_shared_from_this<Person> {
 
         int getAge(Date d);
 
-		void describe();
+		void describe(Date d = Date(0,0,0));
 		void generateRandom();
 		void generateRandom(Date bd);
 		int  getBirthYear();

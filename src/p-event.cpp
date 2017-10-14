@@ -81,9 +81,9 @@ std::string ChildbirthEvent::describe()
 {
     std::stringstream s;
     if(owner->getGender() == female)
-        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " gave birth to a child. The child was a " << (child->getGender() == male ? "boy" : "girl") << " named " << child->getMaidenName() << "." << endl;
+        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " gave birth to a " << (child->getGender() == male ? "boy" : "girl") << " named " << child->getMaidenName() << "." << endl;
     if(owner->getGender() == male)
-        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife gave birth to a child. The child was a " << (child->getGender() == male ? "boy" : "girl") << " named " << child->getMaidenName() << "." << endl;
+        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife gave birth to a " << (child->getGender() == male ? "boy" : "girl") << " named " << child->getMaidenName() << "." << endl;
     std::string ret = s.str();
     return ret;
 }

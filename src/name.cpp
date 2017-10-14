@@ -9,6 +9,8 @@
 #include "utils.h"
 #include "name.h"
 
+// TODO: convert to JSON instead of libconfig?
+
 NameGenerator::NameGenerator()
 {
 	readDataFiles();

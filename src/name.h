@@ -26,6 +26,7 @@ class Name {
         std::string getMarried() { return married; };
         std::string getFullMarried() { return given + " " + married; };
         std::string getMaidenName() { return given + " " + family; };
+        std::string getGiven() { return given; };
 };
 
 class NameGenerator {

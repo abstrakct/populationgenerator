@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "date.h"
 #include "population.h"
+#include "config.h"
 
 #include <iostream>
 #include <vector>
@@ -18,10 +19,10 @@ using namespace std;
 #include <boost/random/uniform_int_distribution.hpp>
 
 int seed;
-const int yearzero = 1660;
 boost::random::mt19937 rng;
 NameGenerator *n;
 Population pop;
+ConfigData c;
 
 struct Statistics stat;
 
@@ -29,8 +30,7 @@ void setupInitialPopulation()
 {
     int num;
 
-	num = ri(5, 10);
-	num = ri(num, 20);
+	num = ri(c.initialPopulationMin, c.initialPopulationMax);
 
 	for(int i = 0; i < num; ++i) {
         std::shared_ptr<Person> p;
@@ -40,6 +40,7 @@ void setupInitialPopulation()
 	    p->setBornHere(true);
     }
 
+    // TODO: add some that are already couples?
     stat.initialPopulation = num;
     stat.totalNumberOfPeople = num;
 }
@@ -73,13 +74,13 @@ void processDay(Date d)
         // Go through all the people, see if something should be done to anyone...
         for(auto it : pop.getAll()) {
             if(it->isAlive()) {
-                if(!it->isMarried() && it->getAge(d) >= 18 && one_in(30))
+                if(!it->isMarried() && it->getAge(d) >= c.ageAdult && one_in(c.marriageFrequency)) // 1 in 30
                     lookForPartners(it, d);
-                if(one_in(5))
+                if(one_in(c.sexyTimeFrequency))         // 1 in 5
                     lookForSexyTime(it, d);
-                if(one_in(20000))
+                if(one_in(c.unexpectedDeathFrequency))  // 1 in 20000
                     it->deathForUnknownReasons(d);
-                if(one_in(200))
+                if(one_in(c.oldAgeDeathFrequency))      // 1 in 200
                     it->checkOldAge(d);
 
                 // Look for scheduled events this person has today
@@ -93,7 +94,7 @@ void processDay(Date d)
 
         // Step 2:
         // Check for external events
-        if(one_in(3000))
+        if(one_in(c.immigrationFrequency))  // 1 in 3000
             lookForImmigrants(d);      // TODO: schedule immigrants / migration events??!?!?!
         
         finishedForTheDay = true;
@@ -102,8 +103,8 @@ void processDay(Date d)
 
 void simulate()
 {
-    Date startDate = Date(yearzero + 10, 1, 1);
-    int years = 100;
+    Date startDate = Date(c.yearZero + 10, 1, 1);
+    int years = c.simulationYears;
     stat.start = startDate;
 
     for(int i = 0; i < (365 * years); i++) {
@@ -124,9 +125,10 @@ int main(int argc, char *argv[])
 
 	rng.seed(seed);
 
+    readConfigFiles();
 	n = new NameGenerator();
 
-    cout << endl << endl << " SEED: " << seed;
+    cout << endl << endl << "     SEED: " << seed;
     cout << endl << endl << " P O P U L A T I O N   G E N E R A T O R " << endl << endl;
 
     setupInitialPopulation();
@@ -134,7 +136,7 @@ int main(int argc, char *argv[])
 
     // idea: output to textfile! name yyyymmddhhmmss or something.
     for(auto it : pop.getAll()) {
-        it->describe();
+        it->describe(stat.end);
     }
 
     printStatistics(stat);
