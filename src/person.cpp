@@ -4,7 +4,7 @@
 
 #include "person.h"
 #include "utils.h"
-#include "namegenerator.h"
+#include "name.h"
 #include "date.h"
 #include "population.h"
 

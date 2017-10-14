@@ -1,7 +1,7 @@
 #pragma once
 
 #include "entity.h"
-#include "personalevent.h"
+#include "p-event.h"
 #include "date.h"
 
 #include <vector>
@@ -11,8 +11,8 @@
 // Forward declarations
 class PersonalEvent;
 class Person;
-void lookForPartners(shared_ptr<Person> p, Date d);
-void lookForSexyTime(shared_ptr<Person> p, Date d);
+void lookForPartners(std::shared_ptr<Person> p, Date d);
+void lookForSexyTime(std::shared_ptr<Person> p, Date d);
 
 enum Gender {
     male,

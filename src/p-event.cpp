@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "personalevent.h"
+#include "p-event.h"
 #include "population.h"
 #include "debug.h"
 

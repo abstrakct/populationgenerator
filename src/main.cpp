@@ -1,5 +1,5 @@
 
-#include "namegenerator.h"
+#include "name.h"
 #include "entity.h"
 #include "person.h"
 #include "utils.h"

@@ -7,7 +7,7 @@
 
 #include "debug.h"
 #include "utils.h"
-#include "namegenerator.h"
+#include "name.h"
 
 NameGenerator::NameGenerator()
 {

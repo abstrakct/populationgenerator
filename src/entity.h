@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "namegenerator.h"
+#include "name.h"
 
 class Entity {
 	private:

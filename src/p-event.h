@@ -13,8 +13,6 @@ class Person;
 
 // things to maybe add:
 // engagement (not so interesting, but flavor)
-// got pregnant
-// childbirth (absolutely necessary)
 // 
 enum eventType {
     etBirth,
