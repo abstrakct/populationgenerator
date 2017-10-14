@@ -17,14 +17,52 @@ using namespace std;
 // Boost random number library
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
+// Boos command line options parser
+#include <boost/program_options.hpp>
+namespace po = boost::program_options;
 
-int seed;
+long seed;
 boost::random::mt19937 rng;
 NameGenerator *n;
 Population pop;
 ConfigData c;
 
 struct Statistics stat;
+
+int parseCommandLineOptions(int argc, char **argv)
+{
+    try {
+        po::options_description desc("Allowed options");
+        desc.add_options()
+            ("help,h", "show this help message")
+            ("seed,s", po::value<long>(), "set seed for RNG")
+            ("version,v", "show program version")
+            ;
+        
+        po::variables_map varmap;
+        po::store(po::parse_command_line(argc, argv, desc), varmap);
+        po::notify(varmap);
+
+        if(varmap.count("help")) {
+            cout << desc << endl;
+            return 2;
+        }
+
+        if(varmap.count("seed")) {
+            seed = varmap["seed"].as<long>();
+        }
+
+        if(varmap.count("version")) {
+        }
+    } catch (exception& e) {
+        cerr << "error: " << e.what() << endl;
+        return 1;
+    } catch (...) {
+        cerr << "Exception of unknown type!" << endl;
+    }
+
+    return 0;
+}
 
 void setupInitialPopulation()
 {
@@ -115,12 +153,18 @@ void simulate()
     stat.end = startDate;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
+    int parseResult;
+
     seed = time(0);
 
-    if(argc > 1) {
-        seed = atoi(argv[1]);
+    parseResult = parseCommandLineOptions(argc, argv);
+    if(parseResult == 1) {
+        cerr << "parsing command line failed!" << endl;
+        return 1;
+    } else if(parseResult == 2) {
+        return 0;
     }
 
 	rng.seed(seed);

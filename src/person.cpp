@@ -250,9 +250,11 @@ void Person::deathForUnknownReasons(Date d)
         kill(d, "was attacked and killed by an animal");
     else if(i == 4)
         kill(d, "was killed in an accident");
+    else if(i == 5)
+        kill(d, "drowned at sea.");
     else
         kill(d);
-    stat.deathsUnknown++;
+    stat.deathsVarious++;
 }
 
 void Person::describe(Date d)

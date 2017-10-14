@@ -14,6 +14,7 @@ using namespace std;
 #include <boost/random/uniform_int_distribution.hpp>
 
 extern boost::random::mt19937 rng;
+extern long seed;
 
 int ri(int a, int b) 
 {
@@ -80,7 +81,7 @@ std::string cap(std::string s)
 
 void printStatistics(struct Statistics stat)
 {
-    cout << endl << endl << " S T A T I S T I C S " << endl << endl;
+    cout << endl << endl << " S T A T I S T I C S        seed " << seed << endl << endl;
     cout << "Start date of simulation:   " << stat.start.pp() << endl;
     cout << "End date of simulation:     " << stat.end.pp() << endl;
     cout << "Initial population:         " << stat.initialPopulation << endl;
@@ -92,7 +93,7 @@ void printStatistics(struct Statistics stat)
     cout << "Number of childbirths:      " << stat.births << endl;
     cout << "Number of deaths:           " << stat.deaths << endl;
     cout << "Number of deaths (old age): " << stat.deathsOldAge << endl;
-    cout << "Number of deaths (unknown): " << stat.deathsUnknown << endl;
+    cout << "Number of deaths (various): " << stat.deathsVarious << endl;
     cout << "Number of people alive:     " << (stat.totalNumberOfPeople - stat.deaths) << endl;
     cout << endl;
 }
