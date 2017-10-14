@@ -127,3 +127,5 @@ class MigrationEvent : public PersonalEvent {
         void execute();
 };
 
+
+// vim: fdm=syntax ft=cpp

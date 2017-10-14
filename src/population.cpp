@@ -32,3 +32,5 @@ std::vector<std::shared_ptr<Person>> Population::getAllUnmarried()
 
     return ret;
 }
+
+// vim: fdm=syntax ft=cpp

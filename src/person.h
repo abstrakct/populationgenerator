@@ -112,3 +112,5 @@ class Person : public std::enable_shared_from_this<Person> {
 		void checkOldAge(Date d);
 		void checkUnexpectedDeath(Date d);
 };
+
+// vim: fdm=syntax ft=cpp

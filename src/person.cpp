@@ -378,3 +378,5 @@ void lookForSexyTime(shared_ptr<Person> p, Date d)
 }
 
 
+
+// vim: fdm=syntax ft=cpp

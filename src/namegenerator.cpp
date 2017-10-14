@@ -120,3 +120,5 @@ Name NameGenerator::generateName(bool male)
 }
 
 // vim: fdm=syntax
+
+// vim: fdm=syntax ft=cpp

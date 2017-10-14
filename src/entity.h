@@ -10,3 +10,5 @@ class Entity {
 		void setName(std::string thename) { entityName = thename; };
 		std::string getName() { return entityName; };
 };
+
+// vim: fdm=syntax ft=cpp

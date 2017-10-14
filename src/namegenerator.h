@@ -44,3 +44,5 @@ class NameGenerator {
 
 		Name generateName(bool male = true);
 };
+
+// vim: fdm=syntax ft=cpp

@@ -95,3 +95,5 @@ void printStatistics(struct Statistics stat)
 
 
 // vim: fdm=syntax
+
+// vim: fdm=syntax ft=cpp

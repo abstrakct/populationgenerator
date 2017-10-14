@@ -70,3 +70,5 @@ class Date {
         std::string pp();  // pretty print
 };
 
+
+// vim: fdm=syntax ft=cpp

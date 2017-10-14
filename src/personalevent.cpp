@@ -116,3 +116,5 @@ void MigrationEvent::execute()
 {
 }
 
+
+// vim: fdm=syntax ft=cpp

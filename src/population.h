@@ -18,3 +18,5 @@ class Population {
         std::vector<std::shared_ptr<Person>> getAll();
         std::vector<std::shared_ptr<Person>> getAllUnmarried();
 };
+
+// vim: fdm=syntax ft=cpp
