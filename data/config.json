@@ -10,6 +10,7 @@
             "sexyTimeFrequency": 5,
             "unexpectedDeathFrequency": 20000,
             "oldAgeDeathFrequency": 200,
+            "childBirthDeathFrequency": 100,
             "immigrationFrequency": 3000,
             "deleteme": 0
 

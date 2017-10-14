@@ -27,6 +27,7 @@ void readConfigFiles()
     c.sexyTimeFrequency = simulationoptions[0]["sexyTimeFrequency"].asInt();
     c.unexpectedDeathFrequency = simulationoptions[0]["unexpectedDeathFrequency"].asInt();
     c.oldAgeDeathFrequency = simulationoptions[0]["oldAgeDeathFrequency"].asInt();
+    c.childBirthDeathFrequency = simulationoptions[0]["childBirthDeathFrequency"].asInt();
     c.immigrationFrequency = simulationoptions[0]["immigrationFrequency"].asInt();
 }
 

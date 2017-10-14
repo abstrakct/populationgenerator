@@ -212,6 +212,16 @@ std::shared_ptr<Person> Person::giveBirth(Date d)
     child->name.setFamily(child->father->getFamilyName());
     stat.births++;
     stat.totalNumberOfPeople++;
+
+    if(one_in(c.childBirthDeathFrequency)) {
+        kill(d, "died during child birth");
+        stat.deathsChildBirth++;
+        if(fiftyfifty()) {
+            child->kill(d, "died from complications during birth");
+            stat.deathsOwnBirth++;
+        }
+    }
+
     return child;
 }
 
@@ -239,7 +249,7 @@ void Person::checkOldAge(Date d)
     }
 }
 
-void Person::deathForUnknownReasons(Date d)
+void Person::deathForVariousReasons(Date d)
 {
     int i = ri(1,12);
     if(i == 1) {

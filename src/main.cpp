@@ -27,7 +27,7 @@ NameGenerator *n;
 Population pop;
 ConfigData c;
 
-enum OutputFormat { outEverything, outDeaths };
+enum OutputFormat { outEverything, outDeaths, outBirths };
 
 struct Statistics stat;
 OutputFormat out;
@@ -41,6 +41,7 @@ int parseCommandLineOptions(int argc, char **argv)
             ("seed,s", po::value<long>(), "set seed for RNG")
             ("version,v", "show program version")
             ("deaths,d", "output only deaths and their causes")
+            ("births,b", "output only births")
             ;
         
         po::variables_map varmap;
@@ -61,6 +62,9 @@ int parseCommandLineOptions(int argc, char **argv)
 
         if(varmap.count("deaths")) {
             out = outDeaths;
+        }
+        if(varmap.count("births")) {
+            out = outBirths;
         }
     } catch (exception& e) {
         cerr << "error: " << e.what() << endl;
@@ -125,7 +129,7 @@ void processDay(Date d)
                 if(one_in(c.sexyTimeFrequency))         // 1 in 5
                     lookForSexyTime(it, d);
                 if(one_in(c.unexpectedDeathFrequency))  // 1 in 20000
-                    it->deathForUnknownReasons(d);
+                    it->deathForVariousReasons(d);
                 if(one_in(c.oldAgeDeathFrequency))      // 1 in 200
                     it->checkOldAge(d);
 
@@ -159,6 +163,17 @@ void simulate()
     }
 
     stat.end = startDate;
+}
+
+void printAllEventsOfType(eventType t)
+{
+    for(auto it : pop.getAll()) {
+        for(auto e : it->ev) {
+            if(e->getType() == t) {
+                cout << e->describe();
+            }
+        }
+    }
 }
 
 int main(int argc, char **argv)
@@ -195,15 +210,10 @@ int main(int argc, char **argv)
         }
     }
 
-    if(out == outDeaths) {
-        for(auto it : pop.getAllDead()) {
-            for(auto e : it->ev) {
-                if(e->getType() == etDeath) {
-                    cout << e->describe();
-                }
-            }
-        }
-    }
+    if(out == outDeaths)
+        printAllEventsOfType(etDeath);
+    if(out == outBirths)
+        printAllEventsOfType(etBirth);
 
     printStatistics(stat);
 

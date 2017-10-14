@@ -15,7 +15,7 @@ struct Statistics {
     int immigrants;
     int marriages;
     int sexyTimes, pregnancies, births;
-    int deaths, deathsOldAge, deathsUnknown, deathsVarious, deathsSuicide, deathsAttack, deathsAccident, deathsDrowned, deathsIllness;
+    int deaths, deathsOldAge, deathsUnknown, deathsVarious, deathsSuicide, deathsAttack, deathsAccident, deathsDrowned, deathsIllness, deathsChildBirth, deathsOwnBirth;
 };
 
 signed int ability_modifier(int ab);
