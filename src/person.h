@@ -110,7 +110,7 @@ class Person : public std::enable_shared_from_this<Person> {
 
 		// Checks for various things
 		void checkOldAge(Date d);
-		void checkUnexpectedDeath(Date d);
+		void deathForUnknownReasons(Date d);
 };
 
 // vim: fdm=syntax ft=cpp

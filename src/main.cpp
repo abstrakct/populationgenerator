@@ -73,14 +73,14 @@ void processDay(Date d)
         // Go through all the people, see if something should be done to anyone...
         for(auto it : pop.getAll()) {
             if(it->isAlive()) {
-                if(one_in(500))
-                    it->checkUnexpectedDeath(d);
-                if(one_in(50))
-                    it->checkOldAge(d);
                 if(!it->isMarried() && it->getAge(d) >= 18 && one_in(30))
                     lookForPartners(it, d);
                 if(one_in(5))
                     lookForSexyTime(it, d);
+                if(one_in(20000))
+                    it->deathForUnknownReasons(d);
+                if(one_in(200))
+                    it->checkOldAge(d);
 
                 // Look for scheduled events this person has today
                 for(auto s : it->sched) {
@@ -104,11 +104,14 @@ void simulate()
 {
     Date startDate = Date(yearzero + 10, 1, 1);
     int years = 100;
+    stat.start = startDate;
 
     for(int i = 0; i < (365 * years); i++) {
         ++startDate;
         processDay(startDate);
     }
+
+    stat.end = startDate;
 }
 
 int main(int argc, char *argv[])

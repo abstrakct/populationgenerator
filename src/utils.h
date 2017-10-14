@@ -4,10 +4,12 @@
 #include <cctype>
 #include <boost/serialization/base_object.hpp>
 #include "debug.h"
+#include "date.h"
 
 #define CALL_MEMBER_FN(object, ptr) ((object).*(ptr))()
 
 struct Statistics {
+    Date start, end;
     int initialPopulation;
     int totalNumberOfPeople;
     int immigrants;

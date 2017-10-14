@@ -1,6 +1,8 @@
 
 #include <string>
 #include <sstream>
+#include <iostream>
+
 #include "personalevent.h"
 #include "population.h"
 #include "debug.h"
@@ -88,8 +90,10 @@ std::string ChildbirthEvent::describe()
 
 void ChildbirthEvent::execute()
 {
-    if(!owner->isAlive(date))
-        dbg("giving birth when not alive?!?!?!?!");
+    if(!owner->isAlive(date)) {
+        std::cerr << owner->getName() << " is trying to give birth, but isn't alive! That shouldn't happen!" << endl;
+        exit(1);
+    }
 
     ChildbirthEvent* cbev = new ChildbirthEvent(owner, date);
     ChildbirthEvent* cbevf = new ChildbirthEvent(owner->getSpouse(), date);

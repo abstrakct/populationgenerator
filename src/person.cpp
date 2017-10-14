@@ -237,25 +237,17 @@ void Person::checkOldAge(Date d)
     }
 }
 
-void Person::checkUnexpectedDeath(Date d)
+void Person::deathForUnknownReasons(Date d)
 {
-    int age = this->getAge(d);
-    double a = (double) age;
-    double riskOfDying = pow(2.0, (double)(a / 15.0));
-    int risk = (int) riskOfDying;
-
-    if(risk > 0) {
-        if(x_in_y(risk, 100)) {
-            kill(d);
-            stat.deathsUnknown++;
-        }
-    }
+    kill(d);
+    stat.deathsUnknown++;
 }
 
 void Person::describe()
 {
     std::stringstream description;
 
+    
     for(auto it : ev) {     // TODO: find? search? separate methods for getting birth event etc?
         if(it->getType() == etBirth) {
             BirthEvent *b = dynamic_cast<BirthEvent*>(it);

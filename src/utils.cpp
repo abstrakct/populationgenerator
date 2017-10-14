@@ -81,6 +81,8 @@ std::string cap(std::string s)
 void printStatistics(struct Statistics stat)
 {
     cout << endl << endl << " S T A T I S T I C S " << endl << endl;
+    cout << "Start date of simulation:   " << stat.start.pp() << endl;
+    cout << "End date of simulation:     " << stat.end.pp() << endl;
     cout << "Initial population:         " << stat.initialPopulation << endl;
     cout << "Total number of people:     " << stat.totalNumberOfPeople << endl;
     cout << "Number of immigrants:       " << stat.immigrants << endl;
@@ -91,6 +93,7 @@ void printStatistics(struct Statistics stat)
     cout << "Number of deaths:           " << stat.deaths << endl;
     cout << "Number of deaths (old age): " << stat.deathsOldAge << endl;
     cout << "Number of deaths (unknown): " << stat.deathsUnknown << endl;
+    cout << endl;
 }
 
 
