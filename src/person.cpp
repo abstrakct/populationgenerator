@@ -244,10 +244,12 @@ void Person::deathForUnknownReasons(Date d)
     int i = ri(1,10);
     if(i == 1)
         kill(d, "died of a mysterious illness");
-    else if(i == 2)
+    else if(i == 2 && getAge(d) > 13)
         kill(d, "committed suicide");
     else if(i == 3)
         kill(d, "was attacked and killed by an animal");
+    else if(i == 4)
+        kill(d, "was killed in an accident");
     else
         kill(d);
     stat.deathsUnknown++;
