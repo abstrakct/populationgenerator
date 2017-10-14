@@ -81,20 +81,25 @@ std::string cap(std::string s)
 
 void printStatistics(struct Statistics stat)
 {
-    cout << endl << endl << " S T A T I S T I C S        seed " << seed << endl << endl;
-    cout << "Start date of simulation:   " << stat.start.pp() << endl;
-    cout << "End date of simulation:     " << stat.end.pp() << endl;
-    cout << "Initial population:         " << stat.initialPopulation << endl;
-    cout << "Total number of people:     " << stat.totalNumberOfPeople << endl;
-    cout << "Number of immigrants:       " << stat.immigrants << endl;
-    cout << "Number of marriages:        " << stat.marriages << endl;
-    cout << "Number of sexytimes:        " << stat.sexyTimes << endl;
-    cout << "Number of pregnancies:      " << stat.pregnancies << endl;
-    cout << "Number of childbirths:      " << stat.births << endl;
-    cout << "Number of deaths:           " << stat.deaths << endl;
-    cout << "Number of deaths (old age): " << stat.deathsOldAge << endl;
-    cout << "Number of deaths (various): " << stat.deathsVarious << endl;
-    cout << "Number of people alive:     " << (stat.totalNumberOfPeople - stat.deaths) << endl;
+    cout << endl << endl << " S T A T I S T I C S         seed " << seed << endl << endl;
+    cout << "Start date of simulation:    " << stat.start.pp() << endl;
+    cout << "End date of simulation:      " << stat.end.pp() << endl;
+    cout << "Initial population:          " << stat.initialPopulation << endl;
+    cout << "Total number of people:      " << stat.totalNumberOfPeople << endl;
+    cout << "Total number of deaths:      " << stat.deaths << endl;
+    cout << "Number of immigrants:        " << stat.immigrants << endl;
+    cout << "Number of marriages:         " << stat.marriages << endl;
+    cout << "Number of sexytimes:         " << stat.sexyTimes << endl;
+    cout << "Number of pregnancies:       " << stat.pregnancies << endl;
+    cout << "Number of childbirths:       " << stat.births << endl;
+    cout << "Number of deaths (unknown):  " << stat.deathsUnknown << endl;
+    cout << "Number of deaths (old age):  " << stat.deathsOldAge << endl;
+    cout << "Number of deaths (accident): " << stat.deathsAccident << endl;
+    cout << "Number of deaths (attack):   " << stat.deathsAttack << endl;
+    cout << "Number of deaths (illness):  " << stat.deathsIllness << endl;
+    cout << "Number of deaths (drowned):  " << stat.deathsDrowned << endl;
+    cout << "Number of deaths (suicide):  " << stat.deathsSuicide << endl;
+    cout << "Number of people alive:      " << (stat.totalNumberOfPeople - stat.deaths) << endl;
     cout << endl;
 }
 

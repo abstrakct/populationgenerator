@@ -27,7 +27,10 @@ NameGenerator *n;
 Population pop;
 ConfigData c;
 
+enum OutputFormat { outEverything, outDeaths };
+
 struct Statistics stat;
+OutputFormat out;
 
 int parseCommandLineOptions(int argc, char **argv)
 {
@@ -37,6 +40,7 @@ int parseCommandLineOptions(int argc, char **argv)
             ("help,h", "show this help message")
             ("seed,s", po::value<long>(), "set seed for RNG")
             ("version,v", "show program version")
+            ("deaths,d", "output only deaths and their causes")
             ;
         
         po::variables_map varmap;
@@ -53,6 +57,10 @@ int parseCommandLineOptions(int argc, char **argv)
         }
 
         if(varmap.count("version")) {
+        }
+
+        if(varmap.count("deaths")) {
+            out = outDeaths;
         }
     } catch (exception& e) {
         cerr << "error: " << e.what() << endl;
@@ -158,6 +166,7 @@ int main(int argc, char **argv)
     int parseResult;
 
     seed = time(0);
+    out = outEverything;
 
     parseResult = parseCommandLineOptions(argc, argv);
     if(parseResult == 1) {
@@ -178,9 +187,22 @@ int main(int argc, char **argv)
     setupInitialPopulation();
     simulate();
 
+    // TODO: move to separate functions
     // idea: output to textfile! name yyyymmddhhmmss or something.
-    for(auto it : pop.getAll()) {
-        it->describe(stat.end);
+    if(out == outEverything) {
+        for(auto it : pop.getAll()) {
+            it->describe(stat.end);
+        }
+    }
+
+    if(out == outDeaths) {
+        for(auto it : pop.getAllDead()) {
+            for(auto e : it->ev) {
+                if(e->getType() == etDeath) {
+                    cout << e->describe();
+                }
+            }
+        }
     }
 
     printStatistics(stat);

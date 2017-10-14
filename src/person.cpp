@@ -241,20 +241,26 @@ void Person::checkOldAge(Date d)
 
 void Person::deathForUnknownReasons(Date d)
 {
-    int i = ri(1,10);
-    if(i == 1)
+    int i = ri(1,12);
+    if(i == 1) {
         kill(d, "died of a mysterious illness");
-    else if(i == 2 && getAge(d) > 13)
+        stat.deathsIllness++;
+    } else if(i == 2 && getAge(d) > 13) {
         kill(d, "committed suicide");
-    else if(i == 3)
+        stat.deathsSuicide++;
+    } else if(i == 3) {
         kill(d, "was attacked and killed by an animal");
-    else if(i == 4)
+        stat.deathsAttack++;
+    } else if(i == 4) {
         kill(d, "was killed in an accident");
-    else if(i == 5)
-        kill(d, "drowned at sea.");
-    else
+        stat.deathsAccident++;
+    } else if(getAge(d) >= 4 && (i == 5 || i == 6)) {     // let's not have babies accidentally drown. But a 4 yo child or older (or even a little younger) could potentiall wander off and fall into the ocean and drown. Life is rough.
+        kill(d, "drowned at sea");
+        stat.deathsDrowned++;
+    } else {
         kill(d);
-    stat.deathsVarious++;
+        stat.deathsUnknown++;
+    }
 }
 
 void Person::describe(Date d)
@@ -275,7 +281,7 @@ void Person::describe(Date d)
         if(mother && father) {
             description << cap(getPossessivePronoun()) << " parents were " << mother->getGivenName() << " and " << father->getName() << "." << std::endl;
         } /*else if(mother && !father)
-        if(mother)
+            {if(mother)
             description << getName() << "'s mother was " << mother->getName() << std::endl;
         if(father)
             description << getName() << "'s father was " << father->getName() << std::endl;*/

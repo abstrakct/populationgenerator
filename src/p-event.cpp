@@ -41,7 +41,7 @@ void MarriageEvent::execute()
 std::string DeathEvent::describe()
 {
     std::stringstream s;
-    s << "On " << date.pp() << ", at age " << owner->getAge(owner->getDeathDate()) << ", " << owner->getPersonalPronoun() << " " << reason << "." << std::endl;
+    s << "On " << date.pp() << ", at age " << owner->getAge(owner->getDeathDate()) << ", " << owner->getName() << " " << reason << "." << std::endl;
     std::string ret = s.str();
     return ret;
 }

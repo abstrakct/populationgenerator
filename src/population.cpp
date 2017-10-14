@@ -33,4 +33,18 @@ std::vector<std::shared_ptr<Person>> Population::getAllUnmarried()
     return ret;
 }
 
+
+std::vector<std::shared_ptr<Person>> Population::getAllDead()
+{
+    std::vector<std::shared_ptr<Person>> ret;
+
+    for(auto it : pop) {
+        if(!it->isAlive())
+            ret.push_back(it);
+    }
+
+    return ret;
+}
+
+
 // vim: fdm=syntax ft=cpp
