@@ -41,5 +41,4 @@ void Date::incDay(int a)
 }
 
 
-
 // vim: fdm=syntax ft=cpp

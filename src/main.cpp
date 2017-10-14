@@ -11,6 +11,7 @@
 #include <vector>
 #include <memory>
 #include <map>
+#include <list>
 
 using namespace std;
 
@@ -167,13 +168,19 @@ void simulate()
 
 void printAllEventsOfType(eventType t)
 {
+    std::list<PersonalEvent*> thelist;
+
     for(auto it : pop.getAll()) {
         for(auto e : it->ev) {
             if(e->getType() == t) {
-                cout << e->describe();
+                thelist.push_back(e);
             }
         }
     }
+
+    thelist.sort([](PersonalEvent *a, PersonalEvent *b) { return a->getDate() < b->getDate(); });  // LAMBDA!
+    for(auto it : thelist)
+        cout << it->describe();
 }
 
 int main(int argc, char **argv)

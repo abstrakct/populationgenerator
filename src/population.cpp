@@ -46,5 +46,16 @@ std::vector<std::shared_ptr<Person>> Population::getAllDead()
     return ret;
 }
 
+std::list<shared_ptr<Person>> Population::getAllSortedList()
+{
+    std::list<shared_ptr<Person>> ret;
+    for(auto it : pop) {
+        ret.push_back(it);
+    }
+
+    ret.sort();
+    return ret;
+}
+
 
 // vim: fdm=syntax ft=cpp

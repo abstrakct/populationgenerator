@@ -5,6 +5,7 @@
 #pragma once
 
 #include <vector>
+#include <list>
 #include "person.h"
 
 
@@ -18,6 +19,7 @@ class Population {
         std::vector<std::shared_ptr<Person>> getAll();
         std::vector<std::shared_ptr<Person>> getAllUnmarried();
         std::vector<std::shared_ptr<Person>> getAllDead();
+        std::list<std::shared_ptr<Person>>   getAllSortedList();
 };
 
 // vim: fdm=syntax ft=cpp

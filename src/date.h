@@ -45,7 +45,7 @@ class Date {
                 if(this->month < rhs.month)
                     return true;
                 if(this->month == rhs.month) {
-                    if(this->day <= rhs.day)
+                    if(this->day < rhs.day)
                         return true;
                 }
             }
