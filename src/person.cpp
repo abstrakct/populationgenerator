@@ -17,6 +17,7 @@ extern const int yearzero = 1660;
 extern boost::random::mt19937 rng;
 extern NameGenerator *n;
 extern Population pop;
+extern struct Statistics stat;
 
 // Constructors
 /*
@@ -156,7 +157,7 @@ int Person::getAge(Date d) {
 
 void Person::fuck(std::shared_ptr<Person> partner, Date d)
 {
-    if(getAge(d) <= 50 && one_in(300)) {
+    if(getAge(d) <= 50 && spouse->getAge(d) <= 50 && one_in(300)) {
         if(gender == male && partner->getGender() == female && !partner->isPregnant())
             partner->impregnate(d);
         if(gender == female && partner->getGender() == male && !isPregnant())
@@ -179,6 +180,7 @@ void Person::marry(std::shared_ptr<Person> spouse, Date date)
 
     MarriageEvent *m = new MarriageEvent(shared_from_this(), date);
     ev.push_back(m);
+    stat.marriages++;
 }
 
 void Person::kill(Date d)
@@ -186,14 +188,25 @@ void Person::kill(Date d)
     setAlive(false);
     DeathEvent *event;
 
-    if(getAge(d) >= 80 && fiftyfifty())
-        event = new DeathEvent(shared_from_this(), d, "died of old age");
-    else
-        event = new DeathEvent(shared_from_this(), d);
+    event = new DeathEvent(shared_from_this(), d);
     ev.push_back(event);
 
     if(married && spouse->isAlive())
         spouse->makeWidow(d);
+    stat.deaths++;
+}
+
+void Person::kill(Date d, std::string reason)
+{
+    setAlive(false);
+    DeathEvent *event;
+
+    event = new DeathEvent(shared_from_this(), d, reason);
+    ev.push_back(event);
+
+    if(married && spouse->isAlive())
+        spouse->makeWidow(d);
+    stat.deaths++;
 }
 
 void Person::impregnate(Date d)
@@ -201,6 +214,7 @@ void Person::impregnate(Date d)
     PregnantEvent *preggers = new PregnantEvent(shared_from_this(), d, spouse);
     setPregnant(true);
     ev.push_back(preggers);
+    stat.pregnancies++;
 
     Date cbd = d + (268 + ri(-10, 10));         // 268 is the median length of a human pregnancy, and 70% give birth within +/- 10 days of this date, statistically. Or so I've read.
     ChildbirthEvent *cb = new ChildbirthEvent(shared_from_this(), cbd);
@@ -215,6 +229,8 @@ std::shared_ptr<Person> Person::giveBirth(Date d)
     child->generateRandom(d);
     child->setBornHere(true);
     child->name.setFamily(child->father->getFamilyName());
+    stat.births++;
+    stat.totalNumberOfPeople++;
     return child;
 }
 
@@ -228,21 +244,23 @@ void Person::makeWidow(Date d)
 
 void Person::checkOldAge(Date d)
 {
-    int year = d.getYear();
-    int age = this->getAge(year);
+    int age = this->getAge(d);
     double a = (double) age;
 
-    if(age >= 50) {
-        double riskOfDying = pow(2.0, (double)(a / 15.0));
+    if(age >= 60) {
+        double riskOfDying = (pow(2.0, (double)(a / 15.0))) / 4.0;
         int risk = (int) riskOfDying;
-        //dbg("Risk of dying at age %d: %f (%d)", age, riskOfDying, risk);
+        //dbg("age = %d   riskOfDying = %f    risk = %d", age, riskOfDying, risk);
+        if(x_in_y(risk, 100)) {
+            kill(d, "died from old age");
+            stat.deathsOldAge++;
+        }
     }
 }
 
 void Person::checkUnexpectedDeath(Date d)
 {
-    int year = d.getYear();
-    int age = this->getAge(year);
+    int age = this->getAge(d);
     double a = (double) age;
     double riskOfDying = pow(2.0, (double)(a / 15.0));
     int risk = (int) riskOfDying;
@@ -250,6 +268,7 @@ void Person::checkUnexpectedDeath(Date d)
     if(risk > 0) {
         if(x_in_y(risk, 100)) {
             kill(d);
+            stat.deathsUnknown++;
         }
     }
 }
@@ -353,6 +372,7 @@ void lookForSexyTime(shared_ptr<Person> p, Date d)
 {
     if(p->isMarried() && p->getSpouse()->isAlive() && fiftyfifty()) {      // could be simulated in more detail or more stastically accurate, but, well, lol, it's probably good enough! At least there's no necrophilia.
         p->fuck(p->getSpouse(), d);
+        stat.sexyTimes++;
         //cout << d.pp() << ": " << p->getName() << " got Sexy Time with " << p->getSpouse()->getName() << "!" << endl;
     }
 }

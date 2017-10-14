@@ -23,6 +23,7 @@ boost::random::mt19937 rng;
 NameGenerator *n;
 Population pop;
 
+struct Statistics stat;
 
 void setupInitialPopulation()
 {
@@ -38,6 +39,9 @@ void setupInitialPopulation()
 	    p->generateRandom();
 	    p->setBornHere(true);
     }
+
+    stat.initialPopulation = num;
+    stat.totalNumberOfPeople = num;
 }
 
 void lookForImmigrants(Date d)
@@ -55,6 +59,8 @@ void lookForImmigrants(Date d)
         MigrationEvent *mig;
         mig = new MigrationEvent(p, d);
         p->ev.push_back(mig);
+        stat.immigrants++;
+        stat.totalNumberOfPeople++;
 }
 
 void processDay(Date d)
@@ -67,8 +73,10 @@ void processDay(Date d)
         // Go through all the people, see if something should be done to anyone...
         for(auto it : pop.getAll()) {
             if(it->isAlive()) {
-                if(one_in(250))
+                if(one_in(500))
                     it->checkUnexpectedDeath(d);
+                if(one_in(50))
+                    it->checkOldAge(d);
                 if(!it->isMarried() && it->getAge(d) >= 18 && one_in(30))
                     lookForPartners(it, d);
                 if(one_in(5))
@@ -86,7 +94,7 @@ void processDay(Date d)
         // Step 2:
         // Check for external events
         if(one_in(3000))
-            lookForImmigrants(d);
+            lookForImmigrants(d);      // TODO: schedule immigrants / migration events??!?!?!
         
         finishedForTheDay = true;
     }
@@ -125,6 +133,8 @@ int main(int argc, char *argv[])
     for(auto it : pop.getAll()) {
         it->describe();
     }
+
+    printStatistics(stat);
 
 	return 0;
 }

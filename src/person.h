@@ -105,6 +105,7 @@ class Person : public std::enable_shared_from_this<Person> {
         void fuck(std::shared_ptr<Person> partner, Date d);
 		void marry(std::shared_ptr<Person> spouse, Date date);
 		void kill(Date d);
+		void kill(Date d, std::string reason);
 		void impregnate(Date d);
 
 		// Checks for various things

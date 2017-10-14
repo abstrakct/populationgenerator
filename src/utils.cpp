@@ -5,6 +5,10 @@
 #include <stdlib.h>
 #include <string>
 #include <cctype>
+#include <iostream>
+using namespace std;
+
+#include "utils.h"
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
@@ -73,4 +77,21 @@ std::string cap(std::string s)
     ret[0] = toupper(ret[0]);
     return ret;
 }
+
+void printStatistics(struct Statistics stat)
+{
+    cout << endl << endl << " S T A T I S T I C S " << endl << endl;
+    cout << "Initial population:         " << stat.initialPopulation << endl;
+    cout << "Total number of people:     " << stat.totalNumberOfPeople << endl;
+    cout << "Number of immigrants:       " << stat.immigrants << endl;
+    cout << "Number of marriages:        " << stat.marriages << endl;
+    cout << "Number of sexytimes:        " << stat.sexyTimes << endl;
+    cout << "Number of pregnancies:      " << stat.pregnancies << endl;
+    cout << "Number of childbirths:      " << stat.births << endl;
+    cout << "Number of deaths:           " << stat.deaths << endl;
+    cout << "Number of deaths (old age): " << stat.deathsOldAge << endl;
+    cout << "Number of deaths (unknown): " << stat.deathsUnknown << endl;
+}
+
+
 // vim: fdm=syntax

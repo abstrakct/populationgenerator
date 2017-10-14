@@ -7,10 +7,14 @@
 
 #define CALL_MEMBER_FN(object, ptr) ((object).*(ptr))()
 
-/*
-#define max(a, b) (a > b ? a : b)
-#define min(a, b) (a < b ? a : b)
-*/
+struct Statistics {
+    int initialPopulation;
+    int totalNumberOfPeople;
+    int immigrants;
+    int marriages;
+    int sexyTimes, pregnancies, births;
+    int deaths, deathsOldAge, deathsUnknown;
+};
 
 signed int ability_modifier(int ab);
 int ri(int a, int b);
@@ -20,6 +24,7 @@ bool one_in(int chance);
 int dice(int num, int sides, signed int modifier);
 int roll_die();
 std::string cap(std::string s);
+void printStatistics(struct Statistics stat);
 
 
 // vim: fdm=syntax
