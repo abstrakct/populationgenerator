@@ -140,5 +140,3 @@ int main(int argc, char *argv[])
 }
 
 // vim: fdm=syntax ft=cpp
-
-// vim: fdm=syntax ft=cpp

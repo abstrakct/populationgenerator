@@ -19,27 +19,6 @@ extern NameGenerator *n;
 extern Population pop;
 extern struct Statistics stat;
 
-// Constructors
-/*
-Person::Person(std::shared_ptr<Person> m, std::shared_ptr<Person> f, Date d)
-{
-    if(fiftyfifty()) {
-        setName(n->generateName(true));
-        setGender(male);
-    } else {
-        setName(n->generateName(false));
-        setGender(female);
-    }
-
-    mother = m;
-    father = f;
-
-    name.setFamily(father->getFamilyName());
-    BirthEvent *b = new BirthEvent(shared_from_this(), d);
-    ev.push_back(b);
-}
-*/
-
 // Methods for Person class
 
 void Person::generateRandom()
@@ -277,8 +256,6 @@ void Person::describe()
 {
     std::stringstream description;
 
-    //description << getName() << " was born in " << getBirthYear() << ". ";
-    
     for(auto it : ev) {     // TODO: find? search? separate methods for getting birth event etc?
         if(it->getType() == etBirth) {
             BirthEvent *b = dynamic_cast<BirthEvent*>(it);
@@ -345,7 +322,7 @@ void Person::describe()
 }
 
 
-// Useful functions
+// Various related functions
 
 bool agesWithinReason(int a, int b)
 {
