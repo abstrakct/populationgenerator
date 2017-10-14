@@ -255,7 +255,7 @@ void Person::deathForVariousReasons(Date d)
     if(i == 1) {
         kill(d, "died of a mysterious illness");
         stat.deathsIllness++;
-    } else if(i == 2 && getAge(d) > 13) {
+    } else if(i == 2 && getAge(d) > 13 && fiftyfifty()) {
         kill(d, "committed suicide");
         stat.deathsSuicide++;
     } else if(i == 3) {
