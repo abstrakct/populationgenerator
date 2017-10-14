@@ -11,7 +11,7 @@
             "unexpectedDeathFrequency": 20000,
             "oldAgeDeathFrequency": 200,
             "childBirthDeathFrequency": 100,
-            "immigrationFrequency": 3000,
+            "immigrationFrequency": 1000,
             "deleteme": 0
 
         }
