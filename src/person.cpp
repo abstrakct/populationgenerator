@@ -204,6 +204,7 @@ void Person::impregnate(Date d)
 
 std::shared_ptr<Person> Person::giveBirth(Date d)
 {
+    // TODO: add stillbirth :(
     std::shared_ptr<Person> child;
     child = pop.spawnPerson();
     child->setParents(shared_from_this(), getSpouse()->shared_from_this());
@@ -308,7 +309,6 @@ void Person::describe(Date d)
         }
     }
 
-
     if(isMarried()) {
         for(auto it : ev) {
             if(it->getType() == etMarriage) {
@@ -374,7 +374,7 @@ void lookForPartners(shared_ptr<Person> p, Date d)
 
 void lookForSexyTime(shared_ptr<Person> p, Date d)
 {
-    if(p->isMarried() && p->getSpouse()->isAlive() && fiftyfifty()) {      // could be simulated in more detail or more stastically accurate, but, well, lol, it's probably good enough! At least there's no necrophilia.
+    if(p->isMarried() && p->getSpouse()->isAlive() && fiftyfifty()) {      // could be simulated in more detail or more statistically accurate, but, well, lol, it's probably good enough! At least there's no necrophilia.
         p->fuck(p->getSpouse(), d);
         stat.sexyTimes++;
         //cout << d.pp() << ": " << p->getName() << " got Sexy Time with " << p->getSpouse()->getName() << "!" << endl;

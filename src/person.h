@@ -17,6 +17,7 @@ void lookForSexyTime(std::shared_ptr<Person> p, Date d);
 enum Gender {
     male,
     female,
+    unknown,
     other
 };
 
@@ -73,19 +74,23 @@ class Person : public std::enable_shared_from_this<Person> {
         std::shared_ptr<Person> giveBirth(Date d);
 
         std::string getPossessivePronoun() { 
-            if(gender == male)
+            if (gender == male)
                 return "his";
-            else if(gender == female)
+            else if (gender == female)
                 return "her";
+            else if (gender == unknown)
+                return "their";
             else
                 return "its";
         };
 
         std::string getPersonalPronoun() { 
-            if(gender == male)
+            if (gender == male)
                 return "he";
-            else if(gender == female)
+            else if (gender == female)
                 return "she";
+            else if (gender == unknown)
+                return "they";
             else
                 return "it";
         };
