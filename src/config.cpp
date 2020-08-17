@@ -10,10 +10,13 @@ extern ConfigData c;
 void readConfigFiles()
 {
     std::ifstream ifs(CONFIG_FILE);
-    Json::Reader reader;
+    Json::CharReaderBuilder builder;
+    Json::CharReader *reader = builder.newCharReader();
     Json::Value root;
+    std::string errors;
 
-    reader.parse(ifs, root);
+    ifs >> root;
+    reader->parse(root.asString().c_str(), root.asString().c_str() + root.asString().size(), &root, &errors);
     Json::Value& simulationoptions = root["simulationoptions"];
 
     // TODO: add error checking / try/catch exceptions 
