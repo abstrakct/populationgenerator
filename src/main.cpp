@@ -6,8 +6,10 @@
 #include "date.h"
 #include "population.h"
 #include "config.h"
+#include "logger.h"
 
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include <memory>
 #include <map>
@@ -27,6 +29,8 @@ boost::random::mt19937 rng;
 NameGenerator *n;
 Population pop;
 ConfigData c;
+// TODO: implement logger class properly!!
+Logger *l;
 
 enum OutputFormat { outEverything, outDeaths, outBirths, outAlive };
 
@@ -190,6 +194,7 @@ void printAllEventsOfType(eventType t)
 int main(int argc, char **argv)
 {
     int parseResult;
+    std::stringstream outfilename;
 
     seed = time(0);
     out = outEverything;
@@ -203,6 +208,8 @@ int main(int argc, char **argv)
     }
 
 	rng.seed(seed);
+    outfilename << "logs/" << seed << ".txt";
+    l = new Logger(outfilename.str());
 
     readConfigFiles();
 	n = new NameGenerator();
@@ -232,6 +239,9 @@ int main(int argc, char **argv)
         printAllEventsOfType(etBirth);
 
     printStatistics(stat);
+
+    // delete log (close file)
+    delete l;
 
 	return 0;
 }
