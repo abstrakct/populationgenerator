@@ -22,7 +22,7 @@ DCOMPILE_FLAGS = -g -ggdb -D DEBUG_ON -D DEVELOPMENT_MODE
 INCLUDES = -I $(SRC_PATH)/ -I $(SRC_PATH)/../include
 # General linker settings
 #LINK_FLAGS = -lboost_program_options -lboost_random -lm -ltcodxx -lSDL -lSDL2_mixer `pkg-config --libs libconfig++` -Llib -Wl,-rpath=lib
-LINK_FLAGS = -ljsoncpp -lboost_program_options -lboost_random -lboost_serialization -lm -ltcodxx `pkg-config --libs libconfig++` -Llib -Wl,-rpath=lib
+LINK_FLAGS = -ljsoncpp -lboost_program_options -lboost_random -lboost_serialization -lm `pkg-config --libs libconfig++` -Llib -Wl,-rpath=lib
 # Additional release-specific linker settings
 RLINK_FLAGS = 
 # Additional debug-specific linker settings
