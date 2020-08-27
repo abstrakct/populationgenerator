@@ -1,6 +1,7 @@
 {
-    "simulationoptions": [
-        {
+    "options": {
+        "simulation": [
+            {
             "yearZero": 1660,
             "simulationYears": 100,
             "initialPopulationMin": 10,
@@ -13,8 +14,9 @@
             "childBirthDeathFrequency": 100,
             "immigrationFrequency": 1000,
             "deleteme": 0
-
-        }
-    ]
+            }
+        ],
+        "test": "test option"
+    }
 }
 
