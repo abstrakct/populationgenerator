@@ -40,7 +40,7 @@ enum OutputFormat
     outAlive
 };
 
-struct Statistics stat;
+struct Statistics globalStatistics;
 OutputFormat out;
 
 int parseCommandLineOptions(int argc, char **argv)
@@ -111,8 +111,8 @@ void setupInitialPopulation()
     }
 
     // TODO: add some that are already couples?
-    stat.initialPopulation = num;
-    stat.totalNumberOfPeople = num;
+    globalStatistics.initialPopulation = num;
+    globalStatistics.totalNumberOfPeople = num;
 }
 
 void lookForImmigrants(Date d)
@@ -130,8 +130,8 @@ void lookForImmigrants(Date d)
     MigrationEvent *mig;
     mig = new MigrationEvent(p, d);
     p->ev.push_back(mig);
-    stat.immigrants++;
-    stat.totalNumberOfPeople++;
+    globalStatistics.immigrants++;
+    globalStatistics.totalNumberOfPeople++;
 }
 
 void processDay(Date d)
@@ -180,7 +180,7 @@ void simulate()
 {
     Date startDate = Date(c.yearZero + 10, 1, 1);
     int years = c.simulationYears;
-    stat.start = startDate;
+    globalStatistics.start = startDate;
 
     for (int i = 0; i < (365 * years); i++)
     {
@@ -188,7 +188,7 @@ void simulate()
         processDay(startDate);
     }
 
-    stat.end = startDate;
+    globalStatistics.end = startDate;
 }
 
 void printAllEventsOfType(eventType t)
@@ -254,7 +254,7 @@ int main(int argc, char **argv)
     {
         for (auto it : population.getAll())
         {
-            it->describe(stat.end);
+            it->describe(globalStatistics.end);
         }
     }
 
@@ -262,7 +262,7 @@ int main(int argc, char **argv)
     {
         for (auto it : population.getAllAlive())
         {
-            it->describe(stat.end);
+            it->describe(globalStatistics.end);
         }
     }
 
@@ -271,7 +271,7 @@ int main(int argc, char **argv)
     if (out == outBirths)
         printAllEventsOfType(etBirth);
 
-    printStatistics(stat);
+    printStatistics(globalStatistics);
 
     // delete log (close file)
     delete l;

@@ -18,7 +18,7 @@ extern const int yearzero = 1660;
 extern boost::random::mt19937 rng;
 extern NameGenerator *n;
 extern Population population;
-extern struct Statistics stat;
+extern struct Statistics globalStatistics;
 extern ConfigData c;
 
 // Methods for Person class
@@ -168,6 +168,8 @@ void Person::fuck(std::shared_ptr<Person> partner, Date d)
         if (gender == female && partner->getGender() == male && !isPregnant())
             impregnate(d);
     }
+
+    statistics.sexytimes++;
 }
 
 void Person::marry(std::shared_ptr<Person> spouse, Date date)
@@ -186,7 +188,9 @@ void Person::marry(std::shared_ptr<Person> spouse, Date date)
 
     MarriageEvent *m = new MarriageEvent(shared_from_this(), date);
     ev.push_back(m);
-    stat.marriages++;
+
+    statistics.marriages++;
+    globalStatistics.marriages++;
 }
 
 void Person::kill(Date d)
@@ -199,7 +203,8 @@ void Person::kill(Date d)
 
     if (married && spouse->isAlive())
         spouse->makeWidow(d);
-    stat.deaths++;
+
+    globalStatistics.deaths++;
 }
 
 void Person::kill(Date d, std::string reason)
@@ -212,7 +217,8 @@ void Person::kill(Date d, std::string reason)
 
     if (married && spouse->isAlive())
         spouse->makeWidow(d);
-    stat.deaths++;
+
+    globalStatistics.deaths++;
 }
 
 void Person::impregnate(Date d)
@@ -220,7 +226,8 @@ void Person::impregnate(Date d)
     PregnantEvent *preggers = new PregnantEvent(shared_from_this(), d, spouse);
     setPregnant(true);
     ev.push_back(preggers);
-    stat.pregnancies++;
+    statistics.pregnancies++;
+    globalStatistics.pregnancies++;
 
     Date cbd = d + (268 + ri(-10, 10)); // 268 is the median length of a human pregnancy, and 70% give birth within +/- 10 days of this date, statistically. Or so I've read.
     ChildbirthEvent *cb = new ChildbirthEvent(shared_from_this(), cbd);
@@ -236,17 +243,17 @@ std::shared_ptr<Person> Person::giveBirth(Date d)
     child->generateRandom(d);
     child->setBornHere(true);
     child->name.setFamily(child->father->getFamilyName());
-    stat.births++;
-    stat.totalNumberOfPeople++;
+    globalStatistics.births++;
+    globalStatistics.totalNumberOfPeople++;
 
     if (one_in(c.childBirthDeathFrequency))
     {
         kill(d, "died during child birth");
-        stat.deathsChildBirth++;
+        globalStatistics.deathsChildBirth++;
         if (fiftyfifty())
         {
             child->kill(d, "died from complications during birth");
-            stat.deathsOwnBirth++;
+            globalStatistics.deathsOwnBirth++;
         }
     }
 
@@ -274,43 +281,45 @@ void Person::checkOldAge(Date d)
         if (x_in_y(risk, 100))
         {
             kill(d, "died from old age");
-            stat.deathsOldAge++;
+            globalStatistics.deathsOldAge++;
         }
     }
 }
 
+// TODO: this should be more flexible, data-driven
 void Person::deathForVariousReasons(Date d)
 {
     int i = ri(1, 12);
     if (i == 1)
     {
         kill(d, "died of a mysterious illness");
-        stat.deathsIllness++;
+        globalStatistics.deathsIllness++;
     }
     else if (i == 2 && getAge(d) > 13 && fiftyfifty())
     {
         kill(d, "committed suicide");
-        stat.deathsSuicide++;
+        globalStatistics.deathsSuicide++;
     }
     else if (i == 3)
     {
         kill(d, "was attacked and killed by an animal");
-        stat.deathsAttack++;
+        globalStatistics.deathsAttack++;
     }
     else if (i == 4)
     {
         kill(d, "was killed in an accident");
-        stat.deathsAccident++;
+        globalStatistics.deathsAccident++;
     }
+    // let's not have babies accidentally drown. But a 4yo child or older (or even a little younger) could potentially wander off and fall into the ocean and drown. Life is rough.
     else if (getAge(d) >= 4 && (i == 5 || i == 6))
-    { // let's not have babies accidentally drown. But a 4yo child or older (or even a little younger) could potentially wander off and fall into the ocean and drown. Life is rough.
+    {
         kill(d, "drowned at sea");
-        stat.deathsDrowned++;
+        globalStatistics.deathsDrowned++;
     }
     else
     {
         kill(d);
-        stat.deathsUnknown++;
+        globalStatistics.deathsUnknown++;
     }
 }
 
@@ -442,7 +451,7 @@ void lookForSexyTime(shared_ptr<Person> p, Date d)
     if (p->isMarried() && p->getSpouse()->isAlive() && fiftyfifty())
     { // could be simulated in more detail or more statistically accurate, but, well, lol, it's probably good enough! At least there's no necrophilia.
         p->fuck(p->getSpouse(), d);
-        stat.sexyTimes++;
+        globalStatistics.sexyTimes++;
         //cout << d.pp() << ": " << p->getName() << " got Sexy Time with " << p->getSpouse()->getName() << "!" << endl;
     }
 }
