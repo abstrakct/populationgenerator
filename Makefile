@@ -74,6 +74,8 @@ END_TIME = read st < $(TIME_FILE) ; \
 # Version macros
 # Comment/remove this section to remove versioning
 #VERSION = $(shell git describe --tags --long --dirty --always | \
+
+
 VERSION = $(shell git describe --tags --long --always | \
 	sed 's/v\([0-9]*\)\.\([0-9]*\)-\?.*-\([0-9]*\)-\(.*\)/\1 \2 \3 \4/g')
 VERSION_MAJOR = $(word 1, $(VERSION))
