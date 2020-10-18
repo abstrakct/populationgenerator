@@ -235,13 +235,13 @@ int main(int argc, char **argv)
     // idea: output to textfile! name yyyymmddhhmmss or something.
     if (out == outEverything) {
         for (auto it : population.getAll()) {
-            it->describe(globalStatistics.end);
+            it->describe(globalStatistics.end, true);
         }
     }
 
     if (out == outAlive) {
         for (auto it : population.getAllAlive()) {
-            it->describe(globalStatistics.end);
+            it->describe(globalStatistics.end, true);
         }
     }
 

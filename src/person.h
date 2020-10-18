@@ -116,7 +116,7 @@ public:
 
     int getAge(Date d);
 
-    void describe(Date d = Date(0, 0, 0));
+    void describe(Date d = Date(0, 0, 0), bool stats = false);
     void generateRandom();
     void generateRandom(Date bd);
     int getBirthYear();

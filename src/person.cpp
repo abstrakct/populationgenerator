@@ -153,6 +153,7 @@ void Person::fuck(std::shared_ptr<Person> partner, Date d)
             impregnate(d);
     }
 
+    partner->statistics.sexytimes++;
     statistics.sexytimes++;
 }
 
@@ -233,7 +234,7 @@ std::shared_ptr<Person> Person::giveBirth(Date d)
         kill(d, "died during child birth");
         globalStatistics.deathsChildBirth++;
         if (fiftyfifty()) {
-            child->kill(d, "died from complications during birth");
+            child->kill(d, "died from complications during " + child->getPossessivePronoun() + " birth");
             globalStatistics.deathsOwnBirth++;
         }
     }
@@ -266,6 +267,7 @@ void Person::checkOldAge(Date d)
 }
 
 // TODO: this should be more flexible, data-driven
+// TODO: take age more into account!
 void Person::deathForVariousReasons(Date d)
 {
     int i = ri(1, 12);
@@ -281,18 +283,18 @@ void Person::deathForVariousReasons(Date d)
     } else if (i == 4) {
         kill(d, "was killed in an accident");
         globalStatistics.deathsAccident++;
-    }
-    // let's not have babies accidentally drown. But a 4yo child or older (or even a little younger) could potentially wander off and fall into the ocean and drown. Life is rough.
-    else if (getAge(d) >= 4 && (i == 5 || i == 6)) {
+    } else if (getAge(d) >= 4 && (i == 5 || i == 6)) {
+        // let's not have babies accidentally drown. But a 4yo child or older (or even a little younger) could potentially wander off and fall into the ocean and drown. Life is rough.
         kill(d, "drowned at sea");
         globalStatistics.deathsDrowned++;
+    } else if (i == 7) {
     } else {
         kill(d);
         globalStatistics.deathsUnknown++;
     }
 }
 
-void Person::describe(Date d)
+void Person::describe(Date d, bool stats)
 {
     std::stringstream description;
 
@@ -358,6 +360,13 @@ void Person::describe(Date d)
                 DeathEvent *dev = dynamic_cast<DeathEvent *>(it);
                 description << dev->describe();
             }
+        }
+    }
+
+    if (stats) {
+        description << cap(getPersonalPronoun()) << " got married " << statistics.marriages << " times, and had sex " << statistics.sexytimes << " times." << std::endl;
+        if (gender == female) {
+            description << cap(getPersonalPronoun()) << " got pregnant " << statistics.pregnancies << " times." << std::endl;
         }
     }
 
