@@ -43,4 +43,5 @@ void readConfigFiles()
     c.oldAgeDeathFrequency = options["simulation"][0]["oldAgeDeathFrequency"].asInt();
     c.childBirthDeathFrequency = options["simulation"][0]["childBirthDeathFrequency"].asInt();
     c.immigrationFrequency = options["simulation"][0]["immigrationFrequency"].asInt();
+    c.maxAgeForPregnancy = options["simulation"][0]["maxAgeForPregnancy"].asInt();
 }

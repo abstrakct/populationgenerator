@@ -27,7 +27,7 @@ namespace po = boost::program_options;
 long seed;
 boost::random::mt19937 rng;
 NameGenerator *n;
-Population pop;
+Population population;
 ConfigData c;
 // TODO: implement logger class properly!!
 Logger *l;
@@ -105,7 +105,7 @@ void setupInitialPopulation()
     {
         std::shared_ptr<Person> p;
 
-        p = pop.spawnPerson();
+        p = population.spawnPerson();
         p->generateRandom();
         p->setBornHere(true);
     }
@@ -118,7 +118,7 @@ void setupInitialPopulation()
 void lookForImmigrants(Date d)
 {
     std::shared_ptr<Person> p;
-    p = pop.spawnPerson();
+    p = population.spawnPerson();
 
     int birthyear = d.getYear() + ri(-38, -18); // immigrants are between 18 - 38 years old
     int birthmonth = ri(1, 12);
@@ -143,7 +143,7 @@ void processDay(Date d)
 
         // Step 1:
         // Go through all the people, see if something should be done to anyone...
-        for (auto it : pop.getAll())
+        for (auto it : population.getAll())
         {
             if (it->isAlive())
             {
@@ -195,7 +195,7 @@ void printAllEventsOfType(eventType t)
 {
     std::list<PersonalEvent *> thelist;
 
-    for (auto it : pop.getAll())
+    for (auto it : population.getAll())
     {
         for (auto e : it->ev)
         {
@@ -252,7 +252,7 @@ int main(int argc, char **argv)
     // idea: output to textfile! name yyyymmddhhmmss or something.
     if (out == outEverything)
     {
-        for (auto it : pop.getAll())
+        for (auto it : population.getAll())
         {
             it->describe(stat.end);
         }
@@ -260,7 +260,7 @@ int main(int argc, char **argv)
 
     if (out == outAlive)
     {
-        for (auto it : pop.getAllAlive())
+        for (auto it : population.getAllAlive())
         {
             it->describe(stat.end);
         }

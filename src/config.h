@@ -9,11 +9,13 @@
 
 void readConfigFiles();
 
-struct ConfigData {
+struct ConfigData
+{
     int yearZero;
     int simulationYears;
     int initialPopulationMin, initialPopulationMax;
     int ageAdult;
     int marriageFrequency, sexyTimeFrequency, unexpectedDeathFrequency, oldAgeDeathFrequency, childBirthDeathFrequency;
     int immigrationFrequency;
+    int maxAgeForPregnancy;
 };

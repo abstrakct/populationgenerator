@@ -13,6 +13,7 @@
             "oldAgeDeathFrequency": 200,
             "childBirthDeathFrequency": 100,
             "immigrationFrequency": 1000,
+            "maxAgeForPregnancy": 50,
             "deleteme": 0
             }
         ],
