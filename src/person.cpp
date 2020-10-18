@@ -1,13 +1,13 @@
 #include <iostream>
-#include <string>
 #include <sstream>
+#include <string>
 
-#include "person.h"
-#include "utils.h"
-#include "name.h"
-#include "date.h"
-#include "population.h"
 #include "config.h"
+#include "date.h"
+#include "name.h"
+#include "person.h"
+#include "population.h"
+#include "utils.h"
 
 // Boost random number library
 #include <boost/random/mersenne_twister.hpp>
@@ -25,13 +25,10 @@ extern ConfigData c;
 
 void Person::generateRandom()
 {
-    if (fiftyfifty())
-    {
+    if (fiftyfifty()) {
         setName(n->generateName(true));
         setGender(male);
-    }
-    else
-    {
+    } else {
         setName(n->generateName(false));
         setGender(female);
     }
@@ -47,13 +44,10 @@ void Person::generateRandom()
 
 void Person::generateRandom(Date bd)
 {
-    if (fiftyfifty())
-    {
+    if (fiftyfifty()) {
         setName(n->generateName(true));
         setGender(male);
-    }
-    else
-    {
+    } else {
         setName(n->generateName(false));
         setGender(female);
     }
@@ -72,8 +66,7 @@ std::string Person::getName()
 
 int Person::getBirthYear()
 {
-    for (auto it : ev)
-    {
+    for (auto it : ev) {
         if (it->getType() == etBirth)
             return it->getDate().getYear();
     }
@@ -82,8 +75,7 @@ int Person::getBirthYear()
 
 Date Person::getBirthday()
 {
-    for (auto it : ev)
-    {
+    for (auto it : ev) {
         if (it->getType() == etBirth)
             return it->getDate();
     }
@@ -92,8 +84,7 @@ Date Person::getBirthday()
 
 int Person::getMarriageYear()
 {
-    for (auto it : ev)
-    {
+    for (auto it : ev) {
         if (it->getType() == etMarriage)
             return it->getDate().getYear();
     }
@@ -102,8 +93,7 @@ int Person::getMarriageYear()
 
 Date Person::getMarriageDate()
 {
-    for (auto it : ev)
-    {
+    for (auto it : ev) {
         if (it->getType() == etMarriage)
             return it->getDate();
     }
@@ -112,8 +102,7 @@ Date Person::getMarriageDate()
 
 Date Person::getDeathDate()
 {
-    for (auto it : ev)
-    {
+    for (auto it : ev) {
         if (it->getType() == etDeath)
             return it->getDate();
     }
@@ -122,8 +111,7 @@ Date Person::getDeathDate()
 
 Date Person::getWidowDate()
 {
-    for (auto it : ev)
-    {
+    for (auto it : ev) {
         if (it->getType() == etWidow)
             return it->getDate();
     }
@@ -138,16 +126,13 @@ int Person::getAge(Date d)
     Date bd = getBirthday();
     age = d.getYear() - bd.getYear();
 
-    if (d.getMonth() < bd.getMonth())
-    {
+    if (d.getMonth() < bd.getMonth()) {
         age--;
         return age;
     }
 
-    if (d.getMonth() == bd.getMonth())
-    {
-        if (d.getDay() < bd.getDay())
-        {
+    if (d.getMonth() == bd.getMonth()) {
+        if (d.getDay() < bd.getDay()) {
             age--;
             return age;
         }
@@ -161,8 +146,7 @@ int Person::getAge(Date d)
 void Person::fuck(std::shared_ptr<Person> partner, Date d)
 {
     // TODO: small chance of pregnancy also after maxAge
-    if (getAge(d) <= c.maxAgeForPregnancy && spouse->getAge(d) <= c.maxAgeForPregnancy && one_in(300))
-    {
+    if (getAge(d) <= c.maxAgeForPregnancy && spouse->getAge(d) <= c.maxAgeForPregnancy && one_in(300)) {
         if (gender == male && partner->getGender() == female && !partner->isPregnant())
             partner->impregnate(d);
         if (gender == female && partner->getGender() == male && !isPregnant())
@@ -174,8 +158,7 @@ void Person::fuck(std::shared_ptr<Person> partner, Date d)
 
 void Person::marry(std::shared_ptr<Person> spouse, Date date)
 {
-    if (married)
-    {
+    if (married) {
         dbg("%s is already married!", name.get().c_str());
     }
 
@@ -246,12 +229,10 @@ std::shared_ptr<Person> Person::giveBirth(Date d)
     globalStatistics.births++;
     globalStatistics.totalNumberOfPeople++;
 
-    if (one_in(c.childBirthDeathFrequency))
-    {
+    if (one_in(c.childBirthDeathFrequency)) {
         kill(d, "died during child birth");
         globalStatistics.deathsChildBirth++;
-        if (fiftyfifty())
-        {
+        if (fiftyfifty()) {
             child->kill(d, "died from complications during birth");
             globalStatistics.deathsOwnBirth++;
         }
@@ -273,13 +254,11 @@ void Person::checkOldAge(Date d)
     int age = this->getAge(d);
     double a = (double)age;
 
-    if (age >= 60)
-    {
+    if (age >= 60) {
         double riskOfDying = (pow(2.0, (double)(a / 15.0))) / 4.0;
         int risk = (int)riskOfDying;
         //dbg("age = %d   riskOfDying = %f    risk = %d", age, riskOfDying, risk);
-        if (x_in_y(risk, 100))
-        {
+        if (x_in_y(risk, 100)) {
             kill(d, "died from old age");
             globalStatistics.deathsOldAge++;
         }
@@ -290,34 +269,24 @@ void Person::checkOldAge(Date d)
 void Person::deathForVariousReasons(Date d)
 {
     int i = ri(1, 12);
-    if (i == 1)
-    {
+    if (i == 1) {
         kill(d, "died of a mysterious illness");
         globalStatistics.deathsIllness++;
-    }
-    else if (i == 2 && getAge(d) > 13 && fiftyfifty())
-    {
+    } else if (i == 2 && getAge(d) > 13 && fiftyfifty()) {
         kill(d, "committed suicide");
         globalStatistics.deathsSuicide++;
-    }
-    else if (i == 3)
-    {
+    } else if (i == 3) {
         kill(d, "was attacked and killed by an animal");
         globalStatistics.deathsAttack++;
-    }
-    else if (i == 4)
-    {
+    } else if (i == 4) {
         kill(d, "was killed in an accident");
         globalStatistics.deathsAccident++;
     }
     // let's not have babies accidentally drown. But a 4yo child or older (or even a little younger) could potentially wander off and fall into the ocean and drown. Life is rough.
-    else if (getAge(d) >= 4 && (i == 5 || i == 6))
-    {
+    else if (getAge(d) >= 4 && (i == 5 || i == 6)) {
         kill(d, "drowned at sea");
         globalStatistics.deathsDrowned++;
-    }
-    else
-    {
+    } else {
         kill(d);
         globalStatistics.deathsUnknown++;
     }
@@ -327,23 +296,17 @@ void Person::describe(Date d)
 {
     std::stringstream description;
 
-    for (auto it : ev)
-    { // TODO: find? search? separate methods for getting birth event etc?
-        if (it->getType() == etBirth)
-        {
+    for (auto it : ev) { // TODO: find? search? separate methods for getting birth event etc?
+        if (it->getType() == etBirth) {
             BirthEvent *b = dynamic_cast<BirthEvent *>(it);
             description << b->describe();
         }
     }
 
-    if (!mother && !father)
-    {
+    if (!mother && !father) {
         description << "It is not known who " << getPossessivePronoun() << " parents were." << std::endl;
-    }
-    else
-    {
-        if (mother && father)
-        {
+    } else {
+        if (mother && father) {
             description << cap(getPossessivePronoun()) << " parents were " << mother->getGivenName() << " and " << father->getName() << "." << std::endl;
         } /*else if(mother && !father)
             {if(mother)
@@ -352,64 +315,46 @@ void Person::describe(Date d)
             description << getName() << "'s father was " << father->getName() << std::endl;*/
     }
 
-    if (bornHere)
-    {
+    if (bornHere) {
         description << cap(getPersonalPronoun()) << " was born here in Collinsport." << std::endl;
-    }
-    else
-    {
-        for (auto it : ev)
-        {
-            if (it->getType() == etMigration)
-            {
+    } else {
+        for (auto it : ev) {
+            if (it->getType() == etMigration) {
                 MigrationEvent *m = dynamic_cast<MigrationEvent *>(it);
                 description << m->describe();
             }
         }
     }
 
-    if (isMarried())
-    {
-        for (auto it : ev)
-        {
-            if (it->getType() == etMarriage)
-            {
+    if (isMarried()) {
+        for (auto it : ev) {
+            if (it->getType() == etMarriage) {
                 MarriageEvent *m = dynamic_cast<MarriageEvent *>(it);
                 description << m->describe();
             }
-            if (it->getType() == etPregnant)
-            {
+            if (it->getType() == etPregnant) {
                 PregnantEvent *preg = dynamic_cast<PregnantEvent *>(it);
                 description << preg->describe();
             }
-            if (it->getType() == etChildbirth)
-            {
+            if (it->getType() == etChildbirth) {
                 ChildbirthEvent *cb = dynamic_cast<ChildbirthEvent *>(it);
                 description << cb->describe();
             }
-            if (it->getType() == etWidow)
-            {
+            if (it->getType() == etWidow) {
                 WidowEvent *w = dynamic_cast<WidowEvent *>(it);
                 description << w->describe();
             }
         }
-    }
-    else
-    {
+    } else {
         if (getAge(getDeathDate()) >= c.ageAdult)
             description << cap(getPersonalPronoun()) << " never married." << std::endl;
     }
 
-    if (isAlive())
-    {
+    if (isAlive()) {
         description << "As of " << d.pp() << " " << getPersonalPronoun() << " is " << getAge(d) << " years old and still alive." << std::endl;
-    }
-    else
-    {
-        for (auto it : ev)
-        {
-            if (it->getType() == etDeath)
-            {
+    } else {
+        for (auto it : ev) {
+            if (it->getType() == etDeath) {
                 DeathEvent *dev = dynamic_cast<DeathEvent *>(it);
                 description << dev->describe();
             }
@@ -432,12 +377,9 @@ bool agesWithinReason(int a, int b)
 
 void lookForPartners(shared_ptr<Person> p, Date d)
 {
-    for (auto partner : population.getAllUnmarried())
-    {
-        if (partner->getGender() != p->getGender() && partner->getAge(d) >= c.ageAdult && partner->getFamilyName() != p->getFamilyName())
-        { // no same sex marriages yet :/ maybe in the progressive future. On the bright side, also no children getting married or people with the same family name (the latter are assumed to be related).
-            if ((agesWithinReason(partner->getAge(d), p->getAge(d))))
-            {
+    for (auto partner : population.getAllUnmarried()) {
+        if (partner->getGender() != p->getGender() && partner->getAge(d) >= c.ageAdult && partner->getFamilyName() != p->getFamilyName()) { // no same sex marriages yet :/ maybe in the progressive future. On the bright side, also no children getting married or people with the same family name (the latter are assumed to be related).
+            if ((agesWithinReason(partner->getAge(d), p->getAge(d)))) {
                 p->marry(partner, d);
                 partner->marry(p, d);
                 return;
@@ -448,8 +390,7 @@ void lookForPartners(shared_ptr<Person> p, Date d)
 
 void lookForSexyTime(shared_ptr<Person> p, Date d)
 {
-    if (p->isMarried() && p->getSpouse()->isAlive() && fiftyfifty())
-    { // could be simulated in more detail or more statistically accurate, but, well, lol, it's probably good enough! At least there's no necrophilia.
+    if (p->isMarried() && p->getSpouse()->isAlive() && fiftyfifty()) { // could be simulated in more detail or more statistically accurate, but, well, lol, it's probably good enough! At least there's no necrophilia.
         p->fuck(p->getSpouse(), d);
         globalStatistics.sexyTimes++;
         //cout << d.pp() << ": " << p->getName() << " got Sexy Time with " << p->getSpouse()->getName() << "!" << endl;

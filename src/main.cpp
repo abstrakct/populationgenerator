@@ -1,20 +1,20 @@
 
-#include "name.h"
-#include "entity.h"
-#include "person.h"
-#include "utils.h"
-#include "date.h"
-#include "population.h"
 #include "config.h"
+#include "date.h"
+#include "entity.h"
 #include "logger.h"
+#include "name.h"
+#include "person.h"
+#include "population.h"
+#include "utils.h"
 #include "version.h"
 
 #include <iostream>
+#include <list>
+#include <map>
+#include <memory>
 #include <sstream>
 #include <vector>
-#include <memory>
-#include <map>
-#include <list>
 
 using namespace std;
 
@@ -33,8 +33,7 @@ ConfigData c;
 // TODO: implement logger class properly!!
 Logger *l;
 
-enum OutputFormat
-{
+enum OutputFormat {
     outVersion,
     outEverything,
     outDeaths,
@@ -47,8 +46,7 @@ OutputFormat out;
 
 int parseCommandLineOptions(int argc, char **argv)
 {
-    try
-    {
+    try {
         po::options_description desc("Allowed options");
         desc.add_options()("alive,a", "output full description, but only those alive at the end of simulation")("births,b", "output only births")("deaths,d", "output only deaths and their causes")("help,h", "show this help message")("seed,s", po::value<long>(), "set seed for RNG")("version,v", "show program version");
 
@@ -56,42 +54,32 @@ int parseCommandLineOptions(int argc, char **argv)
         po::store(po::parse_command_line(argc, argv, desc), varmap);
         po::notify(varmap);
 
-        if (varmap.count("help"))
-        {
+        if (varmap.count("help")) {
             cout << desc << endl;
             return 2;
         }
 
-        if (varmap.count("seed"))
-        {
+        if (varmap.count("seed")) {
             seed = varmap["seed"].as<long>();
         }
 
-        if (varmap.count("version"))
-        {
+        if (varmap.count("version")) {
             out = outVersion;
         }
 
-        if (varmap.count("deaths"))
-        {
+        if (varmap.count("deaths")) {
             out = outDeaths;
         }
-        if (varmap.count("births"))
-        {
+        if (varmap.count("births")) {
             out = outBirths;
         }
-        if (varmap.count("alive"))
-        {
+        if (varmap.count("alive")) {
             out = outAlive;
         }
-    }
-    catch (exception &e)
-    {
+    } catch (exception &e) {
         cerr << "error: " << e.what() << endl;
         return 1;
-    }
-    catch (...)
-    {
+    } catch (...) {
         cerr << "Exception of unknown type!" << endl;
     }
 
@@ -104,8 +92,7 @@ void setupInitialPopulation()
 
     num = ri(c.initialPopulationMin, c.initialPopulationMax);
 
-    for (int i = 0; i < num; ++i)
-    {
+    for (int i = 0; i < num; ++i) {
         std::shared_ptr<Person> p;
 
         p = population.spawnPerson();
@@ -141,15 +128,12 @@ void processDay(Date d)
 {
     bool finishedForTheDay = false;
 
-    while (!finishedForTheDay)
-    {
+    while (!finishedForTheDay) {
 
         // Step 1:
         // Go through all the people, see if something should be done to anyone...
-        for (auto it : population.getAll())
-        {
-            if (it->isAlive())
-            {
+        for (auto it : population.getAll()) {
+            if (it->isAlive()) {
                 if (!it->isMarried() && it->getAge(d) >= c.ageAdult && one_in(c.marriageFrequency)) // 1 in 30
                     lookForPartners(it, d);
                 if (one_in(c.sexyTimeFrequency)) // 1 in 5
@@ -160,10 +144,8 @@ void processDay(Date d)
                     it->checkOldAge(d);
 
                 // Look for scheduled events this person has today
-                for (auto s : it->sched)
-                {
-                    if (s->getDate() == d)
-                    {
+                for (auto s : it->sched) {
+                    if (s->getDate() == d) {
                         s->execute();
                     }
                 }
@@ -185,8 +167,7 @@ void simulate()
     int years = c.simulationYears;
     globalStatistics.start = startDate;
 
-    for (int i = 0; i < (365 * years); i++)
-    {
+    for (int i = 0; i < (365 * years); i++) {
         ++startDate;
         processDay(startDate);
     }
@@ -198,12 +179,9 @@ void printAllEventsOfType(eventType t)
 {
     std::list<PersonalEvent *> thelist;
 
-    for (auto it : population.getAll())
-    {
-        for (auto e : it->ev)
-        {
-            if (e->getType() == t)
-            {
+    for (auto it : population.getAll()) {
+        for (auto e : it->ev) {
+            if (e->getType() == t) {
                 thelist.push_back(e);
             }
         }
@@ -223,18 +201,14 @@ int main(int argc, char **argv)
     out = outEverything;
 
     parseResult = parseCommandLineOptions(argc, argv);
-    if (parseResult == 1)
-    {
+    if (parseResult == 1) {
         cerr << "parsing command line failed!" << endl;
         return 1;
-    }
-    else if (parseResult == 2)
-    {
+    } else if (parseResult == 2) {
         return 0;
     }
 
-    if (out == outVersion)
-    {
+    if (out == outVersion) {
         cout << "Population Generator v" << VERSION_STRING << endl;
         exit(0);
     }
@@ -259,18 +233,14 @@ int main(int argc, char **argv)
     simulate();
 
     // idea: output to textfile! name yyyymmddhhmmss or something.
-    if (out == outEverything)
-    {
-        for (auto it : population.getAll())
-        {
+    if (out == outEverything) {
+        for (auto it : population.getAll()) {
             it->describe(globalStatistics.end);
         }
     }
 
-    if (out == outAlive)
-    {
-        for (auto it : population.getAllAlive())
-        {
+    if (out == outAlive) {
+        for (auto it : population.getAllAlive()) {
             it->describe(globalStatistics.end);
         }
     }
