@@ -7,6 +7,7 @@
 #include "population.h"
 #include "config.h"
 #include "logger.h"
+#include "version.h"
 
 #include <iostream>
 #include <sstream>
@@ -34,6 +35,7 @@ Logger *l;
 
 enum OutputFormat
 {
+    outVersion,
     outEverything,
     outDeaths,
     outBirths,
@@ -67,6 +69,7 @@ int parseCommandLineOptions(int argc, char **argv)
 
         if (varmap.count("version"))
         {
+            out = outVersion;
         }
 
         if (varmap.count("deaths"))
@@ -230,6 +233,12 @@ int main(int argc, char **argv)
         return 0;
     }
 
+    if (out == outVersion)
+    {
+        cout << "Population Generator v" << VERSION_STRING << endl;
+        exit(0);
+    }
+
     readConfigFiles();
 
     rng.seed(seed);
@@ -243,7 +252,7 @@ int main(int argc, char **argv)
          << "     SEED: " << seed;
     cout << endl
          << endl
-         << " P O P U L A T I O N   G E N E R A T O R " << endl
+         << " P O P U L A T I O N   G E N E R A T O R     v" << VERSION_STRING << endl
          << endl;
 
     setupInitialPopulation();
