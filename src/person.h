@@ -1,12 +1,12 @@
 #pragma once
 
+#include "date.h"
 #include "entity.h"
 #include "p-event.h"
-#include "date.h"
 
-#include <vector>
-#include <memory>
 #include <map>
+#include <memory>
+#include <vector>
 
 // Forward declarations
 class PersonalEvent;
@@ -14,8 +14,7 @@ class Person;
 void lookForPartners(std::shared_ptr<Person> p, Date d);
 void lookForSexyTime(std::shared_ptr<Person> p, Date d);
 
-enum Gender
-{
+enum Gender {
     male,
     female,
     unknown,
@@ -37,8 +36,7 @@ private:
     std::vector<Person *> siblings;
 
     // Statistics
-    struct
-    {
+    struct {
         int marriages = 0;
         int sexytimes = 0;
         int pregnancies = 0;
