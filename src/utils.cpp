@@ -2,10 +2,10 @@
  * Various utility functions
  */
 
-#include <stdlib.h>
-#include <string>
 #include <cctype>
 #include <iostream>
+#include <stdlib.h>
+#include <string>
 using namespace std;
 
 #include "utils.h"
@@ -16,7 +16,7 @@ using namespace std;
 extern boost::random::mt19937 rng;
 extern long seed;
 
-int ri(int a, int b) 
+int ri(int a, int b)
 {
     boost::random::uniform_int_distribution<> dist(a, b);
     return dist(rng);
@@ -29,7 +29,7 @@ bool fiftyfifty()
     boost::random::uniform_int_distribution<> dist(1, 100);
     i = dist(rng);
 
-    if(i <= 50)
+    if (i <= 50)
         return true;
     else
         return false;
@@ -42,7 +42,7 @@ bool x_in_y(int x, int y)
     boost::random::uniform_int_distribution<> dist(1, y);
     i = dist(rng);
 
-    if(i <= x)
+    if (i <= x)
         return true;
     else
         return false;
@@ -50,15 +50,19 @@ bool x_in_y(int x, int y)
 
 bool one_in(int chance)
 {
+    if (chance < 1)
+        return false;
     return x_in_y(1, chance);
 }
 
-int roll_die() {
+int roll_die()
+{
     boost::random::uniform_int_distribution<> dist(1, 6);
     return dist(rng);
 }
 
-int dice(int num, int sides, signed int modifier) {
+int dice(int num, int sides, signed int modifier)
+{
     int min, max;
 
     min = num;
@@ -81,7 +85,10 @@ std::string cap(std::string s)
 
 void printStatistics(struct Statistics stat)
 {
-    cout << endl << endl << " S T A T I S T I C S          seed " << seed << endl << endl;
+    cout << endl
+         << endl
+         << " S T A T I S T I C S          seed " << seed << endl
+         << endl;
     cout << "Start date of simulation:     " << stat.start.pp() << endl;
     cout << "End date of simulation:       " << stat.end.pp() << endl;
     cout << "Initial population:           " << stat.initialPopulation << endl;
@@ -104,7 +111,6 @@ void printStatistics(struct Statistics stat)
     cout << "Number of people alive:       " << (stat.totalNumberOfPeople - stat.deaths) << endl;
     cout << endl;
 }
-
 
 // vim: fdm=syntax
 
