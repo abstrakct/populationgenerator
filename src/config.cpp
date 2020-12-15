@@ -1,7 +1,7 @@
 
-#include <json/json.h>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <json/json.h>
 
 #include "config.h"
 
@@ -44,4 +44,5 @@ void readConfigFiles()
     c.childBirthDeathFrequency = options["simulation"][0]["childBirthDeathFrequency"].asInt();
     c.immigrationFrequency = options["simulation"][0]["immigrationFrequency"].asInt();
     c.maxAgeForPregnancy = options["simulation"][0]["maxAgeForPregnancy"].asInt();
+    c.orphanMaxAge = options["simulation"][0]["orphanMaxAge"].asInt();
 }

@@ -29,6 +29,7 @@ private:
     bool bornHere;
     bool married, pregnant = false;
     bool alive = true;
+    bool orphan = false;
 
     std::shared_ptr<Person> mother = nullptr;
     std::shared_ptr<Person> father = nullptr;
@@ -52,37 +53,45 @@ public:
     Person() = default;
 
     std::string getName();
-    void setName(Name n) { name.set(n); };
-    std::string getFamilyName() { return name.getFamily(); };
-    std::string getMaidenName() { return name.getMaidenName(); };
-    std::string getGivenName() { return name.getGiven(); };
+    void setName(Name n) { name.set(n); }
+    std::string getFamilyName() { return name.getFamily(); }
+    std::string getMaidenName() { return name.getMaidenName(); }
+    std::string getGivenName() { return name.getGiven(); }
 
-    void setAlive(bool b = true) { alive = b; };
-    bool isAlive() { return alive; };
+    void setAlive(bool b = true) { alive = b; }
+    bool isAlive() { return alive; }
     bool isAlive(Date d)
     {
         if (getDeathDate() == Date(0, 0, 0)) // person isn't dead!
             return true;
         return (d < getDeathDate());
-    };
+    }
 
-    void setGender(Gender g) { gender = g; };
-    Gender getGender() { return gender; };
+    void setGender(Gender g) { gender = g; }
+    Gender getGender() { return gender; }
 
-    void setBornHere(bool b) { bornHere = b; };
-    bool getBornHere() { return bornHere; };
+    void setBornHere(bool b) { bornHere = b; }
+    bool getBornHere() { return bornHere; }
 
     //void setMovedYear(int y) { movedYear = y; };
     //int  getMovedYear() { return movedYear; };
 
-    void setMarried(bool b) { married = b; };
-    bool isMarried() { return married; };
+    void setMarried(bool b) { married = b; }
+    bool isMarried() { return married; }
 
-    void setPregnant(bool b) { pregnant = b; };
-    bool isPregnant() { return pregnant; };
+    void setPregnant(bool b) { pregnant = b; }
+    bool isPregnant() { return pregnant; }
     std::shared_ptr<Person> giveBirth(Date d);
 
-    void setSpouse(std::shared_ptr<Person> p) { spouse = p; };
+    std::shared_ptr<Person> getMother()
+    {
+        return mother;
+    }
+    std::shared_ptr<Person> getFather() { return father; }
+    inline bool isOrphan() { return orphan; }
+    void makeOrphan(Date d);
+
+    void setSpouse(std::shared_ptr<Person> p) { spouse = p; }
     void setParents(std::shared_ptr<Person> m, std::shared_ptr<Person> f);
 
     // Should get *current* spouse
@@ -92,11 +101,11 @@ public:
             return spouse;
         else
             return spouses.back();
-    };
-    std::shared_ptr<Person> getLastSpouse() { return spouses.back(); };
-    std::vector<std::shared_ptr<Person>> getAllSpouses() { return spouses; };
+    }
+    std::shared_ptr<Person> getLastSpouse() { return spouses.back(); }
+    std::vector<std::shared_ptr<Person>> getAllSpouses() { return spouses; }
 
-    std::vector<std::shared_ptr<Person>> getChildren() { return children; };
+    std::vector<std::shared_ptr<Person>> getChildren() { return children; }
 
     void makeWidow(Date d);
     Date getWidowDate();
@@ -113,7 +122,7 @@ public:
             return "their";
         else
             return "its";
-    };
+    }
 
     std::string getPersonalPronoun()
     {
@@ -125,12 +134,12 @@ public:
             return "they";
         else
             return "it";
-    };
+    }
 
     int getAge(int year)
     {
         return (year - getBirthYear());
-    };
+    }
 
     int getAge(Date d);
 

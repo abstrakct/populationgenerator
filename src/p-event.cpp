@@ -122,4 +122,17 @@ void MigrationEvent::execute()
 {
 }
 
+std::string OrphanEvent::describe()
+{
+    std::stringstream s;
+    if (owner->isAlive(date))
+        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " became an orphan when " << owner->getPossessivePronoun() << " last remaining parent died." << endl;
+    std::string ret = s.str();
+    return ret;
+}
+
+void OrphanEvent::execute()
+{
+}
+
 // vim: fdm=syntax ft=cpp

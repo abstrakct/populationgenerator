@@ -124,7 +124,7 @@ void lookForImmigrants(Date d)
     globalStatistics.totalNumberOfPeople++;
 }
 
-void processDay(Date d)
+void processDay(Date date)
 {
     bool finishedForTheDay = false;
 
@@ -134,18 +134,25 @@ void processDay(Date d)
         // Go through all the people, see if something should be done to anyone...
         for (auto it : population.getAll()) {
             if (it->isAlive()) {
-                if (!it->isMarried() && it->getAge(d) >= c.ageAdult && one_in(c.marriageFrequency)) // 1 in 30
-                    lookForPartners(it, d);
+                if (!it->isOrphan() && it->getAge(date) < c.orphanMaxAge) {
+                    std::shared_ptr<Person> f = it->getFather();
+                    std::shared_ptr<Person> m = it->getMother();
+                    if (f && !f->isAlive() && m && !m->isAlive()) {
+                        it->makeOrphan(date);
+                    }
+                }
+                if (!it->isMarried() && it->getAge(date) >= c.ageAdult && one_in(c.marriageFrequency)) // 1 in 30
+                    lookForPartners(it, date);
                 if (one_in(c.sexyTimeFrequency)) // 1 in 5
-                    lookForSexyTime(it, d);
+                    lookForSexyTime(it, date);
                 if (one_in(c.unexpectedDeathFrequency)) // 1 in 20000
-                    it->deathForVariousReasons(d);
+                    it->deathForVariousReasons(date);
                 if (one_in(c.oldAgeDeathFrequency)) // 1 in 200
-                    it->checkOldAge(d);
+                    it->checkOldAge(date);
 
                 // Look for scheduled events this person has today
                 for (auto s : it->sched) {
-                    if (s->getDate() == d) {
+                    if (s->getDate() == date) {
                         s->execute();
                     }
                 }
@@ -155,7 +162,7 @@ void processDay(Date d)
         // Step 2:
         // Check for external events
         if (one_in(c.immigrationFrequency)) // 1 in 3000
-            lookForImmigrants(d);           // TODO: schedule immigrants / migration events??!?!?!
+            lookForImmigrants(date);        // TODO: schedule immigrants / migration events??!?!?!
 
         finishedForTheDay = true;
     }

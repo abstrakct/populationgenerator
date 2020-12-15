@@ -13,6 +13,8 @@
 
 class Person;
 
+// TODO: better variable names! (e.g. _owner instead of o)
+
 // things to maybe add:
 // engagement (not so interesting, but flavor)
 //
@@ -23,7 +25,8 @@ enum eventType {
     etWidow,
     etPregnant,
     etChildbirth,
-    etMigration
+    etMigration,
+    etOrphan
 };
 
 class PersonalEvent
@@ -136,6 +139,16 @@ class MigrationEvent : public PersonalEvent
 private:
 public:
     MigrationEvent(std::shared_ptr<Person> o, Date d) : PersonalEvent(o, d, etMigration){};
+
+    std::string describe();
+    void execute();
+};
+
+class OrphanEvent : public PersonalEvent
+{
+private:
+public:
+    OrphanEvent(std::shared_ptr<Person> o, Date d) : PersonalEvent(o, d, etOrphan){};
 
     std::string describe();
     void execute();

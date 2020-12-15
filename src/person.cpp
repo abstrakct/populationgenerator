@@ -271,6 +271,13 @@ void Person::makeWidow(Date d)
     spouse = nullptr;
 }
 
+void Person::makeOrphan(Date d)
+{
+    OrphanEvent *oe = new OrphanEvent(shared_from_this(), d);
+    ev.push_back(oe);
+    orphan = true;
+}
+
 void Person::checkOldAge(Date d)
 {
     int age = this->getAge(d);
@@ -397,17 +404,20 @@ void Person::describe(Date d, bool stats)
     for (auto it : ev) {
         auto eventType = it->getType();
         if (eventType == etMarriage) {
-            MarriageEvent *m = dynamic_cast<MarriageEvent *>(it);
-            description << m->describe();
+            MarriageEvent *e = dynamic_cast<MarriageEvent *>(it);
+            description << e->describe();
         } else if (eventType == etPregnant) {
-            PregnantEvent *preg = dynamic_cast<PregnantEvent *>(it);
-            description << preg->describe();
+            PregnantEvent *e = dynamic_cast<PregnantEvent *>(it);
+            description << e->describe();
         } else if (eventType == etChildbirth) {
-            ChildbirthEvent *cb = dynamic_cast<ChildbirthEvent *>(it);
-            description << cb->describe();
+            ChildbirthEvent *e = dynamic_cast<ChildbirthEvent *>(it);
+            description << e->describe();
         } else if (eventType == etWidow) {
-            WidowEvent *w = dynamic_cast<WidowEvent *>(it);
-            description << w->describe();
+            WidowEvent *e = dynamic_cast<WidowEvent *>(it);
+            description << e->describe();
+        } else if (eventType == etOrphan) {
+            OrphanEvent *e = dynamic_cast<OrphanEvent *>(it);
+            description << e->describe();
         } else {
             // description << " ERROR - unknown event found!" << std::endl;
         }
