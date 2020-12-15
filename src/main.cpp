@@ -208,13 +208,13 @@ void drawFamilyTree(std::shared_ptr<Person> startPerson, int step)
     //     }
     if (step > 0) {
         for (int i = step; i > 0; i--) {
-            cout << "  ";
+            cout << "    ";
         }
     }
 
     std::cout << startPerson->getName();
     if (startPerson->isMarried()) {
-        cout << " - " << startPerson->getSpouse()->getName() << std::endl;
+        cout << " -+- " << startPerson->getSpouse()->getName() << std::endl;
     } else {
         cout << std::endl;
     }
