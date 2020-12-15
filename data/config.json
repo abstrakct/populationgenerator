@@ -9,7 +9,7 @@
             "ageAdult": 18,
             "marriageFrequency": 30,
             "sexyTimeFrequency": 5,
-            "conceptionFrequency": 100,
+            "conceptionFrequency": 80,
             "unexpectedDeathFrequency": 20000,
             "oldAgeDeathFrequency": 200,
             "childBirthDeathFrequency": 100,
