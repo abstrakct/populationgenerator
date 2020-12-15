@@ -38,7 +38,8 @@ enum OutputFormat {
     outEverything,
     outDeaths,
     outBirths,
-    outAlive
+    outAlive,
+    outPregnancies
 };
 
 struct Statistics globalStatistics;
@@ -48,7 +49,7 @@ int parseCommandLineOptions(int argc, char **argv)
 {
     try {
         po::options_description desc("Allowed options");
-        desc.add_options()("alive,a", "output full description, but only those alive at the end of simulation")("births,b", "output only births")("deaths,d", "output only deaths and their causes")("help,h", "show this help message")("seed,s", po::value<long>(), "set seed for RNG")("version,v", "show program version");
+        desc.add_options()("alive,a", "output full description, but only those alive at the end of simulation")("births,b", "output only births")("deaths,d", "output only deaths and their causes")("pregnancies,p", "output only pregnancies")("help,h", "show this help message")("seed,s", po::value<long>(), "set seed for RNG")("version,v", "show program version");
 
         po::variables_map varmap;
         po::store(po::parse_command_line(argc, argv, desc), varmap);
@@ -72,6 +73,9 @@ int parseCommandLineOptions(int argc, char **argv)
         }
         if (varmap.count("births")) {
             out = outBirths;
+        }
+        if (varmap.count("pregnancies")) {
+            out = outPregnancies;
         }
         if (varmap.count("alive")) {
             out = outAlive;
@@ -289,10 +293,22 @@ int main(int argc, char **argv)
         printAllEventsOfType(etDeath);
     if (out == outBirths)
         printAllEventsOfType(etBirth);
+    if (out == outPregnancies)
+        printAllEventsOfType(etPregnant);
 
     printStatistics(globalStatistics);
 
-    drawFamilyTree(population.getAll().front(), 0);
+    //drawFamilyTree(population.getAll().front(), 0);
+
+    // std::shared_ptr<Person> p;
+    // p = population.spawnPerson();
+    // p->generateRandom();
+    // p->generateGenes();
+    // p->setGender(male);
+    // printf("Genetic infertility factor: %.1f\n", p->getGenetics().infertility_factor);
+    // for (int i = 0; i < 100; i++) {
+    //     printf("Age: %02d - Calculated IF: %.1f\n", i, p->getGenetics().getInfertilityFactor(i));
+    // }
 
     // delete log (close file)
     delete l;
