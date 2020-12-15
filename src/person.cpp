@@ -181,7 +181,7 @@ void Person::marry(std::shared_ptr<Person> spouse, Date date)
     else
         name.setMarried(getFamilyName());
 
-    MarriageEvent *m = new MarriageEvent(shared_from_this(), date);
+    MarriageEvent *m = new MarriageEvent(shared_from_this(), date, spouse);
     ev.push_back(m);
 
     statistics.marriages++;
@@ -265,7 +265,7 @@ std::shared_ptr<Person> Person::giveBirth(Date d)
 // outdated, but not handled correctly: For now, widow(er)s don't remarry, so married flag stays true.
 void Person::makeWidow(Date d)
 {
-    WidowEvent *wid = new WidowEvent(shared_from_this(), d);
+    WidowEvent *wid = new WidowEvent(shared_from_this(), d, spouse);
     ev.push_back(wid);
     setMarried(false);
     spouse = nullptr;

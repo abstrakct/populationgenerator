@@ -29,7 +29,7 @@ void BirthEvent::execute()
 std::string MarriageEvent::describe()
 {
     std::stringstream s;
-    s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " got married to " << owner->getSpouse()->getMaidenName() << ", who was " << owner->getSpouse()->getAge(owner->getSpouse()->getMarriageDate()) << " years old at the time." << std::endl;
+    s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " got married to " << spouse->getMaidenName() << ", who was " << spouse->getAge(date) << " years old at the time." << std::endl;
     std::string ret = s.str();
     return ret;
 }
@@ -53,7 +53,7 @@ void DeathEvent::execute()
 std::string WidowEvent::describe()
 {
     std::stringstream s;
-    s << "On " << owner->getSpouse()->getDeathDate().pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " became a " << (owner->getGender() == female ? "widow" : "widower") << "." << std::endl;
+    s << "On " << spouse->getDeathDate().pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " became a " << (owner->getGender() == female ? "widow" : "widower") << "." << std::endl;
     std::string ret = s.str();
     return ret;
 }

@@ -6,18 +6,17 @@
 //
 // TODO: General event class this one inherits from? If we need events that are not personal events
 
-#include <string>
-#include <memory>
-#include "person.h"
 #include "date.h"
+#include "person.h"
+#include <memory>
+#include <string>
 
 class Person;
 
 // things to maybe add:
 // engagement (not so interesting, but flavor)
 //
-enum eventType
-{
+enum eventType {
     etBirth,
     etMarriage,
     etDeath,
@@ -74,8 +73,10 @@ public:
 class MarriageEvent : public PersonalEvent
 {
 private:
+    std::shared_ptr<Person> spouse;
+
 public:
-    MarriageEvent(std::shared_ptr<Person> o, Date d) : PersonalEvent(o, d, etMarriage){};
+    MarriageEvent(std::shared_ptr<Person> o, Date d, std::shared_ptr<Person> s) : PersonalEvent(o, d, etMarriage) { spouse = s; };
 
     std::string describe();
     void execute();
@@ -97,8 +98,10 @@ public:
 class WidowEvent : public PersonalEvent
 {
 private:
+    std::shared_ptr<Person> spouse;
+
 public:
-    WidowEvent(std::shared_ptr<Person> o, Date d) : PersonalEvent(o, d, etWidow){};
+    WidowEvent(std::shared_ptr<Person> o, Date d, std::shared_ptr<Person> s) : PersonalEvent(o, d, etWidow) { spouse = s; };
 
     std::string describe();
     void execute();
