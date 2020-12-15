@@ -39,10 +39,13 @@ void readConfigFiles()
     c.ageAdult = options["simulation"][0]["ageAdult"].asInt();
     c.marriageFrequency = options["simulation"][0]["marriageFrequency"].asInt();
     c.sexyTimeFrequency = options["simulation"][0]["sexyTimeFrequency"].asInt();
+    c.conceptionFrequency = options["simulation"][0]["conceptionFrequency"].asInt();
     c.unexpectedDeathFrequency = options["simulation"][0]["unexpectedDeathFrequency"].asInt();
     c.oldAgeDeathFrequency = options["simulation"][0]["oldAgeDeathFrequency"].asInt();
     c.childBirthDeathFrequency = options["simulation"][0]["childBirthDeathFrequency"].asInt();
     c.immigrationFrequency = options["simulation"][0]["immigrationFrequency"].asInt();
     c.maxAgeForPregnancy = options["simulation"][0]["maxAgeForPregnancy"].asInt();
     c.orphanMaxAge = options["simulation"][0]["orphanMaxAge"].asInt();
+    c.averageFemalePuberty = options["simulation"][0]["averageFemalePuberty"].asInt();
+    c.averageMalePuberty = options["simulation"][0]["averageMalePuberty"].asInt();
 }

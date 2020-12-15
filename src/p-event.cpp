@@ -1,4 +1,5 @@
 
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -30,6 +31,7 @@ std::string MarriageEvent::describe()
 {
     std::stringstream s;
     s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " got married to " << spouse->getMaidenName() << ", who was " << spouse->getAge(date) << " years old at the time." << std::endl;
+    // s << "IF: " << std::fixed << std::setprecision(1) << owner->getGenetics().infertility_factor << "  Spouse IF: " << std::fixed << std::setprecision(1) << spouse->getGenetics().infertility_factor << std::endl;
     std::string ret = s.str();
     return ret;
 }

@@ -14,8 +14,9 @@ struct ConfigData {
     int simulationYears;
     int initialPopulationMin, initialPopulationMax;
     int ageAdult;
-    int marriageFrequency, sexyTimeFrequency, unexpectedDeathFrequency, oldAgeDeathFrequency, childBirthDeathFrequency;
+    int marriageFrequency, sexyTimeFrequency, conceptionFrequency, unexpectedDeathFrequency, oldAgeDeathFrequency, childBirthDeathFrequency;
     int immigrationFrequency;
     int maxAgeForPregnancy;
     int orphanMaxAge;
+    int averageFemalePuberty, averageMalePuberty;
 };

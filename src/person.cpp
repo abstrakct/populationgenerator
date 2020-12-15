@@ -21,6 +21,46 @@ extern Population population;
 extern struct Statistics globalStatistics;
 extern ConfigData c;
 
+// Methods for Genetics class
+
+float Genetics::getInfertilityFactor(int age)
+{
+    if (this->gender == female) {
+        if (age < c.averageFemalePuberty) {
+            return 0.0;
+        } else if (age <= 20) {
+            return this->infertility_factor; // unchanged by age
+        } else if (age <= 30) {
+            return this->infertility_factor + (float)(age - 20) / 10;
+        } else if (age <= 40) {
+            return this->infertility_factor * 2 + (float)(age - 30) / 10;
+        } else if (age <= 50) {
+            return this->infertility_factor * 5 + (float)(age - 40) / 10;
+        } else {
+            return this->infertility_factor * 10 + ((float)age / 10) * 2;
+        }
+    } else if (this->gender == male) {
+        if (age < c.averageMalePuberty) {
+            return 0.0;
+        } else if (age <= 20) {
+            return this->infertility_factor; // unchanged by age
+        } else {
+            return this->infertility_factor + (float)(age - 20) / 10;
+            // } else if (age <= 30) {
+            //     return this->infertility_factor + (float)(age - 20) / 10;
+            // } else if (age <= 40) {
+            //     return this->infertility_factor * 2 + (float)(age - 30) / 10;
+            // } else if (age <= 50) {
+            //     return this->infertility_factor * 5 + (float)(age - 40) / 10;
+            // } else {
+            //     return this->infertility_factor * 10 + (float)age / 10;
+        }
+    }
+
+    // if all fails...
+    return 1.0;
+}
+
 // Methods for Person class
 
 void Person::generateRandom()
@@ -54,6 +94,29 @@ void Person::generateRandom(Date bd)
 
     BirthEvent *b = new BirthEvent(shared_from_this(), bd);
     ev.push_back(b);
+}
+
+void Person::generateGenes()
+{
+    // "Generate" a person's genes - not very advanced for now. I might look into genes and inheritance at some point
+
+    // Infertility and related problems. Based on modern statistics, at least slightly.
+    if (genetics.gender == male && x_in_y(9, 100)) {
+        if (one_in(100)) {
+            this->genetics.infertility_factor = 0.0;
+        } else {
+            this->genetics.infertility_factor += (float)(ri(1, 40)) / 10; // 0.1 - 4.0
+        }
+        // printf("Set infertility factor to %.1f\n", this->genetics.infertility_factor);
+    }
+    if (genetics.gender == female && x_in_y(11, 100)) {
+        if (one_in(100)) {
+            this->genetics.infertility_factor = 0.0;
+        } else {
+            this->genetics.infertility_factor += (float)(ri(1, 40)) / 10; // 0.1 - 4.0
+        }
+        // printf("Set infertility factor to %.1f\n", this->genetics.infertility_factor);
+    }
 }
 
 std::string Person::getName()
@@ -154,11 +217,10 @@ void Person::setParents(std::shared_ptr<Person> m, std::shared_ptr<Person> f)
 
 void Person::fuck(std::shared_ptr<Person> partner, Date d)
 {
-    // TODO: small chance of pregnancy also after maxAge
-    if (getAge(d) <= c.maxAgeForPregnancy && spouse->getAge(d) <= c.maxAgeForPregnancy && one_in(300)) {
-        if (gender == male && partner->getGender() == female && !partner->isPregnant())
+    if (one_in(round(c.conceptionFrequency * genetics.getInfertilityFactor(getAge(d)) * partner->getGenetics().getInfertilityFactor(partner->getAge(d))))) {
+        if (genetics.gender == male && partner->getGender() == female && !partner->isPregnant())
             partner->impregnate(d);
-        if (gender == female && partner->getGender() == male && !isPregnant())
+        if (genetics.gender == female && partner->getGender() == male && !isPregnant())
             impregnate(d);
     }
 
@@ -176,7 +238,7 @@ void Person::marry(std::shared_ptr<Person> spouse, Date date)
     setMarried(true);
     spouses.push_back(spouse);
 
-    if (gender == female)
+    if (genetics.gender == female)
         name.setMarried(spouse->getFamilyName());
     else
         name.setMarried(getFamilyName());
@@ -217,6 +279,7 @@ void Person::kill(Date d, std::string reason)
     globalStatistics.deaths++;
 }
 
+// TODO: make sure a reasonable time passes after previous birth before next pregnancy is possible......
 void Person::impregnate(Date d)
 {
     PregnantEvent *preggers = new PregnantEvent(shared_from_this(), d, spouse);
@@ -244,6 +307,7 @@ std::shared_ptr<Person> Person::giveBirth(Date d)
         child->setParents(shared_from_this(), father);
     }
     child->generateRandom(d);
+    child->generateGenes();
     child->setBornHere(true);
     child->name.setFamily(child->father->getFamilyName());
     globalStatistics.births++;
@@ -271,6 +335,15 @@ void Person::makeWidow(Date d)
     spouse = nullptr;
 }
 
+// Set a person as an orphan
+// TODO: Couples can be looking to adopt
+//       - extension: make some people infertile!
+// Depending on person's age, kill them after a few days...
+// E.g.  < 3 years old - can live maybe 3 days?
+//   > 3 < 6 - a few days more?
+//   > 6     - should be able to contact someone for help
+//   > 12    - should be able to survive on their own, can probably get a job (at least back then)
+//   > 15    - can basically function as an adult? (at least back then)
 void Person::makeOrphan(Date d)
 {
     OrphanEvent *oe = new OrphanEvent(shared_from_this(), d);
@@ -365,6 +438,8 @@ void Person::deathForVariousReasons(Date d)
 }
 
 // let's not have babies accidentally drown. But a 4yo child or older (or even a little younger) could potentially wander off and fall into the ocean and drown. Life is rough.
+
+// Describe a person
 void Person::describe(Date d, bool stats)
 {
     std::stringstream description;
@@ -440,7 +515,7 @@ void Person::describe(Date d, bool stats)
 
     if (stats) {
         description << cap(getPersonalPronoun()) << " got married " << statistics.marriages << " times, and had sex " << statistics.sexytimes << " times." << std::endl;
-        if (gender == female) {
+        if (genetics.gender == female) {
             description << cap(getPersonalPronoun()) << " got pregnant " << statistics.pregnancies << " times." << std::endl;
         }
     }

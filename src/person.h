@@ -21,11 +21,27 @@ enum Gender {
     other
 };
 
+// Genetics
+class Genetics
+{
+public:
+    Gender gender;
+
+    /* Infertility factor
+         * 1.0 = normal chance of conceiving
+         * 2.0 = 50 % less likely
+         * 4.0 = 25 % less likely
+         * etc
+         */
+    float infertility_factor = 1.0;
+    // Calculate factor, taking age into account
+    float getInfertilityFactor(int age);
+};
+
 class Person : public std::enable_shared_from_this<Person>
 {
 private:
     Name name;
-    Gender gender;
     bool bornHere;
     bool married, pregnant = false;
     bool alive = true;
@@ -37,6 +53,8 @@ private:
     std::vector<std::shared_ptr<Person>> children;
     std::vector<std::shared_ptr<Person>> spouses;
     std::vector<Person *> siblings;
+
+    struct Genetics genetics;
 
     // Statistics
     struct {
@@ -67,8 +85,8 @@ public:
         return (d < getDeathDate());
     }
 
-    void setGender(Gender g) { gender = g; }
-    Gender getGender() { return gender; }
+    void setGender(Gender g) { genetics.gender = g; }
+    Gender getGender() { return genetics.gender; }
 
     void setBornHere(bool b) { bornHere = b; }
     bool getBornHere() { return bornHere; }
@@ -107,6 +125,8 @@ public:
 
     std::vector<std::shared_ptr<Person>> getChildren() { return children; }
 
+    struct Genetics getGenetics() { return genetics; }
+
     void makeWidow(Date d);
     Date getWidowDate();
 
@@ -114,11 +134,11 @@ public:
 
     std::string getPossessivePronoun()
     {
-        if (gender == male)
+        if (genetics.gender == male)
             return "his";
-        else if (gender == female)
+        else if (genetics.gender == female)
             return "her";
-        else if (gender == unknown)
+        else if (genetics.gender == unknown)
             return "their";
         else
             return "its";
@@ -126,11 +146,11 @@ public:
 
     std::string getPersonalPronoun()
     {
-        if (gender == male)
+        if (genetics.gender == male)
             return "he";
-        else if (gender == female)
+        else if (genetics.gender == female)
             return "she";
-        else if (gender == unknown)
+        else if (genetics.gender == unknown)
             return "they";
         else
             return "it";
@@ -146,6 +166,7 @@ public:
     void describe(Date d = Date(0, 0, 0), bool stats = false);
     void generateRandom();
     void generateRandom(Date bd);
+    void generateGenes();
     int getBirthYear();
     Date getBirthday();
     int getMarriageYear();

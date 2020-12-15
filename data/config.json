@@ -9,12 +9,15 @@
             "ageAdult": 18,
             "marriageFrequency": 30,
             "sexyTimeFrequency": 5,
+            "conceptionFrequency": 100,
             "unexpectedDeathFrequency": 20000,
             "oldAgeDeathFrequency": 200,
             "childBirthDeathFrequency": 100,
             "immigrationFrequency": 1000,
             "maxAgeForPregnancy": 50,
             "orphanMaxAge": 18,
+            "averageFemalePuberty": 14,
+            "averageMalePuberty": 15,
             "deleteme": 0
             }
         ],
