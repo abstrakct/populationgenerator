@@ -165,6 +165,8 @@ void Person::marry(std::shared_ptr<Person> spouse, Date date)
 
     setSpouse(spouse);
     setMarried(true);
+    spouses.push_back(spouse);
+
     if (gender == female)
         name.setMarried(spouse->getFamilyName());
     else
@@ -177,6 +179,7 @@ void Person::marry(std::shared_ptr<Person> spouse, Date date)
     globalStatistics.marriages++;
 }
 
+// TODO: cancel scheduled events (like childbirth) when a person dies.
 void Person::kill(Date d)
 {
     setAlive(false);
@@ -220,10 +223,17 @@ void Person::impregnate(Date d)
 
 std::shared_ptr<Person> Person::giveBirth(Date d)
 {
+    // TODO: set parents etc upon conception!
     // TODO: add stillbirth :(
     std::shared_ptr<Person> child;
     child = population.spawnPerson();
-    child->setParents(shared_from_this(), getSpouse()->shared_from_this());
+    if (spouse) {
+        child->setParents(shared_from_this(), getSpouse()->shared_from_this());
+    } else {
+        // for now, assume the last spouse is the father...
+        std::shared_ptr<Person> father = spouses.back();
+        child->setParents(shared_from_this(), father);
+    }
     child->generateRandom(d);
     child->setBornHere(true);
     child->name.setFamily(child->father->getFamilyName());
@@ -248,6 +258,8 @@ void Person::makeWidow(Date d)
 {
     WidowEvent *wid = new WidowEvent(shared_from_this(), d);
     ev.push_back(wid);
+    setMarried(false);
+    spouse = nullptr;
 }
 
 void Person::checkOldAge(Date d)
@@ -283,17 +295,60 @@ void Person::deathForVariousReasons(Date d)
     } else if (i == 4) {
         kill(d, "was killed in an accident");
         globalStatistics.deathsAccident++;
-    } else if (getAge(d) >= 4 && (i == 5 || i == 6)) {
-        // let's not have babies accidentally drown. But a 4yo child or older (or even a little younger) could potentially wander off and fall into the ocean and drown. Life is rough.
-        kill(d, "drowned at sea");
+    } else if (i == 5) {
+        if (getAge(d) <= 4 || one_in(100)) {
+            kill(d, "drowned accidentally");
+        } else if (getAge(d) <= 10 || one_in(100)) {
+            kill(d, "drowned while swimming");
+        } else {
+            kill(d, "drowned at sea");
+        }
         globalStatistics.deathsDrowned++;
     } else if (i == 7) {
+        int x = ri(1, 11);
+        switch (x) {
+        case 1:
+            kill(d, "died of whooping cough");
+            break;
+        case 2:
+            kill(d, "died of diphteria");
+            break;
+        case 3:
+            kill(d, "died of dysentery");
+            break;
+        case 4:
+            kill(d, "died of tuberculosis");
+            break;
+        case 5:
+            kill(d, "died of typhus");
+            break;
+        case 6:
+            kill(d, "died of typhoid fever");
+            break;
+        case 7:
+            kill(d, "died of rickets");
+            break;
+        case 8:
+            kill(d, "died of chicken pox");
+            break;
+        case 9:
+            kill(d, "died of measles");
+            break;
+        case 10:
+            kill(d, "died of scarlet fever");
+            break;
+        case 11:
+            kill(d, "died of smallpox");
+            break;
+        }
+        globalStatistics.deathsIllness++;
     } else {
         kill(d);
         globalStatistics.deathsUnknown++;
     }
 }
 
+// let's not have babies accidentally drown. But a 4yo child or older (or even a little younger) could potentially wander off and fall into the ocean and drown. Life is rough.
 void Person::describe(Date d, bool stats)
 {
     std::stringstream description;
@@ -328,29 +383,30 @@ void Person::describe(Date d, bool stats)
         }
     }
 
-    if (isMarried()) {
-        for (auto it : ev) {
-            if (it->getType() == etMarriage) {
-                MarriageEvent *m = dynamic_cast<MarriageEvent *>(it);
-                description << m->describe();
-            }
-            if (it->getType() == etPregnant) {
-                PregnantEvent *preg = dynamic_cast<PregnantEvent *>(it);
-                description << preg->describe();
-            }
-            if (it->getType() == etChildbirth) {
-                ChildbirthEvent *cb = dynamic_cast<ChildbirthEvent *>(it);
-                description << cb->describe();
-            }
-            if (it->getType() == etWidow) {
-                WidowEvent *w = dynamic_cast<WidowEvent *>(it);
-                description << w->describe();
-            }
+    // if (isMarried()) {
+    // if (statistics.marriages > 0) {
+    for (auto it : ev) {
+        auto eventType = it->getType();
+        if (eventType == etMarriage) {
+            MarriageEvent *m = dynamic_cast<MarriageEvent *>(it);
+            description << m->describe();
+        } else if (eventType == etPregnant) {
+            PregnantEvent *preg = dynamic_cast<PregnantEvent *>(it);
+            description << preg->describe();
+        } else if (eventType == etChildbirth) {
+            ChildbirthEvent *cb = dynamic_cast<ChildbirthEvent *>(it);
+            description << cb->describe();
+        } else if (eventType == etWidow) {
+            WidowEvent *w = dynamic_cast<WidowEvent *>(it);
+            description << w->describe();
+        } else {
+            // description << " ERROR - unknown event found!" << std::endl;
         }
-    } else {
-        if (getAge(getDeathDate()) >= c.ageAdult)
-            description << cap(getPersonalPronoun()) << " never married." << std::endl;
     }
+    // } else {
+    if (statistics.marriages == 0 && getAge(getDeathDate()) >= c.ageAdult)
+        description << cap(getPersonalPronoun()) << " never married." << std::endl;
+    // }
 
     if (isAlive()) {
         description << "As of " << d.pp() << " " << getPersonalPronoun() << " is " << getAge(d) << " years old and still alive." << std::endl;
@@ -386,7 +442,7 @@ bool agesWithinReason(int a, int b)
 
 void lookForPartners(shared_ptr<Person> p, Date d)
 {
-    for (auto partner : population.getAllUnmarried()) {
+    for (auto partner : population.getAllUnmarried(d)) {
         if (partner->getGender() != p->getGender() && partner->getAge(d) >= c.ageAdult && partner->getFamilyName() != p->getFamilyName()) { // no same sex marriages yet :/ maybe in the progressive future. On the bright side, also no children getting married or people with the same family name (the latter are assumed to be related).
             if ((agesWithinReason(partner->getAge(d), p->getAge(d)))) {
                 p->marry(partner, d);

@@ -30,10 +30,11 @@ private:
     bool married, pregnant = false;
     bool alive = true;
 
-    std::shared_ptr<Person> mother = NULL;
-    std::shared_ptr<Person> father = NULL;
-    std::shared_ptr<Person> spouse = NULL;
+    std::shared_ptr<Person> mother = nullptr;
+    std::shared_ptr<Person> father = nullptr;
+    std::shared_ptr<Person> spouse = nullptr; // current spouse
     std::vector<Person *> siblings;
+    std::vector<std::shared_ptr<Person>> spouses;
 
     // Statistics
     struct {
@@ -43,8 +44,7 @@ private:
     } statistics;
 
 public:
-    std::vector<PersonalEvent *>
-        ev; // TODO: shared_ptr?? // TODO: change to map (?) for easier lookup!!??? wouldn't work for multiple marriages etc.
+    std::vector<PersonalEvent *> ev; // TODO: shared_ptr?? // TODO: change to map (?) for easier lookup!!??? wouldn't work for multiple marriages etc.
     std::vector<PersonalEvent *> sched;
     //std::map<Date, PersonalEvent*> sched;   // Scheduled events! mapped by date
 
@@ -79,7 +79,15 @@ public:
         mother = mo;
         father = fa;
     };
-    std::shared_ptr<Person> getSpouse() { return spouse; };
+    std::shared_ptr<Person> getSpouse()
+    {
+        if (spouse != nullptr)
+            return spouse;
+        else
+            return spouses.back();
+    };
+    std::shared_ptr<Person> getLastSpouse() { return spouses.back(); };
+    std::vector<std::shared_ptr<Person>> getAllSpouses() { return spouses; };
     void makeWidow(Date d);
     Date getWidowDate();
     Date getDeathDate();

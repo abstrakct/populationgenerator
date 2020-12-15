@@ -1,11 +1,11 @@
 
-#include <string>
-#include <sstream>
 #include <iostream>
+#include <sstream>
+#include <string>
 
+#include "debug.h"
 #include "p-event.h"
 #include "population.h"
-#include "debug.h"
 
 extern Population pop;
 
@@ -13,9 +13,9 @@ std::string BirthEvent::describe()
 {
     std::stringstream s;
 
-    if(owner->getGender() == male || (owner->getGender() == female && !owner->isMarried()))
+    if (owner->getGender() == male || (owner->getGender() == female && !owner->isMarried()))
         s << owner->getName() << " was born " << date.pp() << "." << std::endl;
-    if(owner->getGender() == female && owner->isMarried())
+    if (owner->getGender() == female && owner->isMarried())
         s << owner->getName() << ", née " << owner->getFamilyName() << ", was born " << date.pp() << "." << std::endl;
 
     std::string ret = s.str();
@@ -65,9 +65,9 @@ void WidowEvent::execute()
 std::string PregnantEvent::describe()
 {
     std::stringstream s;
-    if(owner->getGender() == female)
+    if (owner->getGender() == female)
         s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " got pregnant." << endl;
-    if(owner->getGender() == male)
+    if (owner->getGender() == male)
         s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife got pregnant." << endl;
     std::string ret = s.str();
     return ret;
@@ -80,9 +80,9 @@ void PregnantEvent::execute()
 std::string ChildbirthEvent::describe()
 {
     std::stringstream s;
-    if(owner->getGender() == female)
+    if (owner->getGender() == female)
         s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " gave birth to a " << (child->getGender() == male ? "boy" : "girl") << " named " << child->getMaidenName() << "." << endl;
-    if(owner->getGender() == male)
+    if (owner->getGender() == male)
         s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPossessivePronoun() << " wife gave birth to a " << (child->getGender() == male ? "boy" : "girl") << " named " << child->getMaidenName() << "." << endl;
     std::string ret = s.str();
     return ret;
@@ -90,27 +90,29 @@ std::string ChildbirthEvent::describe()
 
 void ChildbirthEvent::execute()
 {
-    if(!owner->isAlive(date)) {
+    if (!owner->isAlive(date)) {
         std::cerr << owner->getName() << " is trying to give birth, but isn't alive! That shouldn't happen!" << endl;
+        owner->describe(date);
         exit(1);
     }
 
-    ChildbirthEvent* cbev = new ChildbirthEvent(owner, date);
-    ChildbirthEvent* cbevf = new ChildbirthEvent(owner->getSpouse(), date);
+    std::shared_ptr<Person> father = owner->getSpouse();
+    ChildbirthEvent *cbev = new ChildbirthEvent(owner, date);
+    ChildbirthEvent *cbevf = new ChildbirthEvent(father, date);
 
     owner->setPregnant(false);
     cbev->child = owner->giveBirth(date);
     owner->ev.push_back(cbev);
-    
-    cbevf->owner = owner->getSpouse();
+
+    cbevf->owner = father;
     cbevf->child = cbev->child;
-    owner->getSpouse()->ev.push_back(cbevf);
+    father->ev.push_back(cbevf);
 }
 
 std::string MigrationEvent::describe()
 {
     std::stringstream s;
-    if(owner->isAlive(date))
+    if (owner->isAlive(date))
         s << "On " << date.pp() << " " << owner->getPersonalPronoun() << " moved to Collinsport." << endl;
     std::string ret = s.str();
     return ret;
@@ -119,6 +121,5 @@ std::string MigrationEvent::describe()
 void MigrationEvent::execute()
 {
 }
-
 
 // vim: fdm=syntax ft=cpp
