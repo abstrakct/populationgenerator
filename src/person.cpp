@@ -141,6 +141,15 @@ int Person::getAge(Date d)
     return age;
 }
 
+// Sets a person's parents, and adds person to parents' children
+void Person::setParents(std::shared_ptr<Person> m, std::shared_ptr<Person> f)
+{
+    this->mother = m;
+    this->mother->children.push_back(shared_from_this());
+    this->father = f;
+    this->father->children.push_back(shared_from_this());
+};
+
 // fuck, marry, kill ... heh
 
 void Person::fuck(std::shared_ptr<Person> partner, Date d)
@@ -160,7 +169,7 @@ void Person::fuck(std::shared_ptr<Person> partner, Date d)
 void Person::marry(std::shared_ptr<Person> spouse, Date date)
 {
     if (married) {
-        dbg("%s is already married!", name.get().c_str());
+        dbg("ERROR: %s is already married!", name.get().c_str());
     }
 
     setSpouse(spouse);
@@ -253,7 +262,7 @@ std::shared_ptr<Person> Person::giveBirth(Date d)
 }
 
 // Make a person a widow(er)
-// For now, widow(er)s don't remarry, so married flag stays true.
+// outdated, but not handled correctly: For now, widow(er)s don't remarry, so married flag stays true.
 void Person::makeWidow(Date d)
 {
     WidowEvent *wid = new WidowEvent(shared_from_this(), d);

@@ -33,8 +33,9 @@ private:
     std::shared_ptr<Person> mother = nullptr;
     std::shared_ptr<Person> father = nullptr;
     std::shared_ptr<Person> spouse = nullptr; // current spouse
-    std::vector<Person *> siblings;
+    std::vector<std::shared_ptr<Person>> children;
     std::vector<std::shared_ptr<Person>> spouses;
+    std::vector<Person *> siblings;
 
     // Statistics
     struct {
@@ -55,6 +56,7 @@ public:
     std::string getFamilyName() { return name.getFamily(); };
     std::string getMaidenName() { return name.getMaidenName(); };
     std::string getGivenName() { return name.getGiven(); };
+
     void setAlive(bool b = true) { alive = b; };
     bool isAlive() { return alive; };
     bool isAlive(Date d)
@@ -63,22 +65,27 @@ public:
             return true;
         return (d < getDeathDate());
     };
+
     void setGender(Gender g) { gender = g; };
     Gender getGender() { return gender; };
+
     void setBornHere(bool b) { bornHere = b; };
     bool getBornHere() { return bornHere; };
+
     //void setMovedYear(int y) { movedYear = y; };
     //int  getMovedYear() { return movedYear; };
+
     void setMarried(bool b) { married = b; };
     bool isMarried() { return married; };
+
     void setPregnant(bool b) { pregnant = b; };
     bool isPregnant() { return pregnant; };
+    std::shared_ptr<Person> giveBirth(Date d);
+
     void setSpouse(std::shared_ptr<Person> p) { spouse = p; };
-    void setParents(std::shared_ptr<Person> mo, std::shared_ptr<Person> fa)
-    {
-        mother = mo;
-        father = fa;
-    };
+    void setParents(std::shared_ptr<Person> m, std::shared_ptr<Person> f);
+
+    // Should get *current* spouse
     std::shared_ptr<Person> getSpouse()
     {
         if (spouse != nullptr)
@@ -88,10 +95,13 @@ public:
     };
     std::shared_ptr<Person> getLastSpouse() { return spouses.back(); };
     std::vector<std::shared_ptr<Person>> getAllSpouses() { return spouses; };
+
+    std::vector<std::shared_ptr<Person>> getChildren() { return children; };
+
     void makeWidow(Date d);
     Date getWidowDate();
+
     Date getDeathDate();
-    std::shared_ptr<Person> giveBirth(Date d);
 
     std::string getPossessivePronoun()
     {
