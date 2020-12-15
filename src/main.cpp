@@ -192,6 +192,39 @@ void printAllEventsOfType(eventType t)
         cout << it->describe();
 }
 
+void drawFamilyTree(std::shared_ptr<Person> startPerson, int step)
+{
+    // if (step == 0) {
+    //     std::cout << startPerson->getName();
+    //     if (startPerson->isMarried()) {
+    //         cout << " - " << startPerson->getSpouse()->getName() << std::endl;
+    //     } else {
+    //         cout << std::endl;
+    //     }
+    //     if (startPerson->getChildren().size() > 0) {
+    //         for (auto it : startPerson->getChildren()) {
+    //             drawFamilyTree(it, step + 1);
+    //         }
+    //     }
+    if (step > 0) {
+        for (int i = step; i > 0; i--) {
+            cout << "  ";
+        }
+    }
+
+    std::cout << startPerson->getName();
+    if (startPerson->isMarried()) {
+        cout << " - " << startPerson->getSpouse()->getName() << std::endl;
+    } else {
+        cout << std::endl;
+    }
+    if (startPerson->getChildren().size() > 0) {
+        for (auto it : startPerson->getChildren()) {
+            drawFamilyTree(it, step + 1);
+        }
+    }
+}
+
 int main(int argc, char **argv)
 {
     int parseResult;
@@ -251,6 +284,8 @@ int main(int argc, char **argv)
         printAllEventsOfType(etBirth);
 
     printStatistics(globalStatistics);
+
+    drawFamilyTree(population.getAll().front(), 0);
 
     // delete log (close file)
     delete l;
