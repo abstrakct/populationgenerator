@@ -26,7 +26,9 @@ enum eventType {
     etPregnant,
     etChildbirth,
     etMigration,
-    etOrphan
+    etOrphan,
+    etAdopted,
+    etGotAdopted
 };
 
 class PersonalEvent
@@ -149,6 +151,35 @@ class OrphanEvent : public PersonalEvent
 private:
 public:
     OrphanEvent(std::shared_ptr<Person> o, Date d) : PersonalEvent(o, d, etOrphan){};
+
+    std::string describe();
+    void execute();
+};
+
+class AdoptedEvent : public PersonalEvent
+{
+private:
+    std::shared_ptr<Person> child;
+
+public:
+    AdoptedEvent(std::shared_ptr<Person> o, Date d, std::shared_ptr<Person> c) : PersonalEvent(o, d, etAdopted) { child = c; };
+
+    std::string describe();
+    void execute();
+};
+
+class GotAdoptedEvent : public PersonalEvent
+{
+private:
+    std::shared_ptr<Person> father;
+    std::shared_ptr<Person> mother;
+
+public:
+    GotAdoptedEvent(std::shared_ptr<Person> o, Date d, std::shared_ptr<Person> f, std::shared_ptr<Person> m) : PersonalEvent(o, d, etGotAdopted)
+    {
+        father = f;
+        mother = m;
+    };
 
     std::string describe();
     void execute();

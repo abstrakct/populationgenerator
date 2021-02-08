@@ -136,6 +136,32 @@ void lookForImmigrants(Date d)
     globalStatistics.totalNumberOfPeople++;
 }
 
+/*
+ *
+ * Adoption strategy:
+ * We assume only married couples could adopt an orphan. (Might expand later to allow single parent adoptions.)
+ * TODO: maybe take into account how many children a couple already have?
+ */
+void lookForAdoption(std::shared_ptr<Person> p, Date d)
+{
+    auto couples = population.getAllAliveCouples();
+    for (auto it : couples) {
+        // If we get a "match" and p is still an orphan, go ahead
+        if (one_in(couples.size() /*&& p->isOrphan()*/)) {
+            GotAdoptedEvent *gotadopted = new GotAdoptedEvent(p, d, it, it->getSpouse());
+            p->ev.push_back(gotadopted);
+
+            AdoptedEvent *adopted = new AdoptedEvent(it, d, p);
+            it->ev.push_back(adopted);
+            adopted = new AdoptedEvent(it->getSpouse(), d, p);
+            it->getSpouse()->ev.push_back(adopted);
+
+            p->unOrphan(d);
+            return;
+        }
+    }
+}
+
 void processDay(Date date)
 {
     bool finishedForTheDay = false;
@@ -146,13 +172,18 @@ void processDay(Date date)
         // Go through all the people, see if something should be done to anyone...
         for (auto it : population.getAll()) {
             if (it->isAlive()) {
-                if (!it->isOrphan() && it->getAge(date) < c.orphanMaxAge) {
+                // Has person become an orphan?
+                if (!it->isOrphan() && !it->isAdopted() && it->getAge(date) < c.orphanMaxAge) {
                     std::shared_ptr<Person> f = it->getFather();
                     std::shared_ptr<Person> m = it->getMother();
                     if (f && !f->isAlive() && m && !m->isAlive()) {
                         it->makeOrphan(date);
                     }
                 }
+
+                if (it->isOrphan())
+                    lookForAdoption(it, date);
+
                 if (!it->isMarried() && it->getAge(date) >= c.ageAdult && one_in(c.marriageFrequency)) // 1 in 30
                     lookForPartners(it, date);
                 if (one_in(c.sexyTimeFrequency)) // 1 in 5

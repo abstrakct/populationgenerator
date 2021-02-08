@@ -46,6 +46,7 @@ private:
     bool married, pregnant = false;
     bool alive = true;
     bool orphan = false;
+    bool adopted = false;
 
     std::shared_ptr<Person> mother = nullptr;
     std::shared_ptr<Person> father = nullptr;
@@ -61,6 +62,7 @@ private:
         int marriages = 0;
         int sexytimes = 0;
         int pregnancies = 0;
+        int children = 0;
     } statistics;
 
 public:
@@ -75,6 +77,7 @@ public:
     std::string getFamilyName() { return name.getFamily(); }
     std::string getMaidenName() { return name.getMaidenName(); }
     std::string getGivenName() { return name.getGiven(); }
+    std::string getBirthName() { return name.getGiven() + " " + name.getFamily(); }
 
     void setAlive(bool b = true) { alive = b; }
     bool isAlive() { return alive; }
@@ -108,6 +111,8 @@ public:
     std::shared_ptr<Person> getFather() { return father; }
     inline bool isOrphan() { return orphan; }
     void makeOrphan(Date d);
+    void unOrphan(Date d);
+    inline bool isAdopted() { return adopted; }
 
     void setSpouse(std::shared_ptr<Person> p) { spouse = p; }
     void setParents(std::shared_ptr<Person> m, std::shared_ptr<Person> f);

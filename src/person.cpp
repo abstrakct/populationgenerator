@@ -39,7 +39,7 @@ float Genetics::getInfertilityFactor(int age)
         } else if (age <= 40) {
             return this->infertility_factor * 2 + (float)(age - 30) / 10;
         } else if (age <= 50) {
-            return this->infertility_factor * 5 + (float)(age - 40) / 10;
+            return this->infertility_factor * 7 + (float)(age - 40) / 10;
         } else {
             return this->infertility_factor * 10 + ((float)age / 10) * 2;
         }
@@ -302,14 +302,17 @@ std::shared_ptr<Person> Person::giveBirth(Date d)
     // TODO: set parents etc upon conception!
     // TODO: add stillbirth :(
     std::shared_ptr<Person> child;
+    std::shared_ptr<Person> father = spouses.back();
+
     child = population.spawnPerson();
+
     if (spouse) {
         child->setParents(shared_from_this(), getSpouse()->shared_from_this());
     } else {
         // for now, assume the last spouse is the father...
-        std::shared_ptr<Person> father = spouses.back();
         child->setParents(shared_from_this(), father);
     }
+
     child->generateRandom(d);
     child->setBornHere(true);
     child->name.setFamily(child->father->getFamilyName());
@@ -317,6 +320,8 @@ std::shared_ptr<Person> Person::giveBirth(Date d)
 
     globalStatistics.births++;
     globalStatistics.totalNumberOfPeople++;
+    this->statistics.children++;
+    father->statistics.children++;
 
     if (one_in(c.childBirthDeathFrequency)) {
         kill(d, "died during child birth");
@@ -354,6 +359,13 @@ void Person::makeOrphan(Date d)
     OrphanEvent *oe = new OrphanEvent(shared_from_this(), d);
     ev.push_back(oe);
     orphan = true;
+}
+
+// Person was "unorphaned" - in other words, adopted
+void Person::unOrphan(Date d)
+{
+    orphan = false;
+    adopted = true;
 }
 
 void Person::checkOldAge(Date d)
@@ -499,6 +511,12 @@ void Person::describe(Date d, bool stats)
             description << e->describe();
         } else if (eventType == etOrphan) {
             OrphanEvent *e = dynamic_cast<OrphanEvent *>(it);
+            description << e->describe();
+        } else if (eventType == etAdopted) {
+            AdoptedEvent *e = dynamic_cast<AdoptedEvent *>(it);
+            description << e->describe();
+        } else if (eventType == etGotAdopted) {
+            GotAdoptedEvent *e = dynamic_cast<GotAdoptedEvent *>(it);
             description << e->describe();
         } else {
             // description << " ERROR - unknown event found!" << std::endl;

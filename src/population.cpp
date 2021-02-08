@@ -70,6 +70,18 @@ std::vector<std::shared_ptr<Person>> Population::getAllAlive()
     return ret;
 }
 
+std::vector<std::shared_ptr<Person>> Population::getAllAliveCouples()
+{
+    std::vector<std::shared_ptr<Person>> ret;
+
+    for (auto it : pop) {
+        if (it->isAlive() && it->getGender() == male && it->isMarried() && it->getSpouse()->isAlive())
+            ret.push_back(it);
+    }
+
+    return ret;
+}
+
 std::list<shared_ptr<Person>> Population::getAllSortedList()
 {
     std::list<shared_ptr<Person>> ret;

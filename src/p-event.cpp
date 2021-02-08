@@ -137,4 +137,30 @@ void OrphanEvent::execute()
 {
 }
 
+std::string AdoptedEvent::describe()
+{
+    std::stringstream s;
+    if (owner->isAlive(date))
+        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " adopted " << child->getBirthName() << "." << endl;
+    std::string ret = s.str();
+    return ret;
+}
+
+void AdoptedEvent::execute()
+{
+}
+
+std::string GotAdoptedEvent::describe()
+{
+    std::stringstream s;
+    if (owner->isAlive(date))
+        s << "On " << date.pp() << ", at age " << owner->getAge(date) << ", " << owner->getPersonalPronoun() << " was adopted by " << father->getGivenName() << " and " << mother->getName() << "." << endl;
+    std::string ret = s.str();
+    return ret;
+}
+
+void GotAdoptedEvent::execute()
+{
+}
+
 // vim: fdm=syntax ft=cpp

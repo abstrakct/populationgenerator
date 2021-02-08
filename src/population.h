@@ -22,6 +22,7 @@ public:
     std::vector<std::shared_ptr<Person>> getAllUnmarried(Date d);
     std::vector<std::shared_ptr<Person>> getAllAlive();
     std::vector<std::shared_ptr<Person>> getAllDead();
+    std::vector<std::shared_ptr<Person>> getAllAliveCouples();
     std::list<std::shared_ptr<Person>> getAllSortedList();
 };
 
