@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -25,6 +26,9 @@ extern ConfigData c;
 
 float Genetics::getInfertilityFactor(int age)
 {
+    if (this->infertility_factor == 0.0)
+        return 0.0;
+
     if (this->gender == female) {
         if (age < c.averageFemalePuberty) {
             return 0.0;
@@ -102,20 +106,20 @@ void Person::generateGenes()
 
     // Infertility and related problems. Based on modern statistics, at least slightly.
     if (genetics.gender == male && x_in_y(9, 100)) {
-        if (one_in(100)) {
+        if (one_in(2)) {
             this->genetics.infertility_factor = 0.0;
+            // printf("%s %s: Set infertility factor to %.1f\n", this->name.getGiven().c_str(), this->name.getFamily().c_str(), this->genetics.infertility_factor);
         } else {
             this->genetics.infertility_factor += (float)(ri(1, 40)) / 10; // 0.1 - 4.0
         }
-        // printf("Set infertility factor to %.1f\n", this->genetics.infertility_factor);
     }
     if (genetics.gender == female && x_in_y(11, 100)) {
-        if (one_in(100)) {
+        if (one_in(2)) {
             this->genetics.infertility_factor = 0.0;
+            // printf("%s %s: Set infertility factor to %.1f\n", this->name.getGiven().c_str(), this->name.getFamily().c_str(), this->genetics.infertility_factor);
         } else {
             this->genetics.infertility_factor += (float)(ri(1, 40)) / 10; // 0.1 - 4.0
         }
-        // printf("Set infertility factor to %.1f\n", this->genetics.infertility_factor);
     }
 }
 
@@ -307,9 +311,10 @@ std::shared_ptr<Person> Person::giveBirth(Date d)
         child->setParents(shared_from_this(), father);
     }
     child->generateRandom(d);
-    child->generateGenes();
     child->setBornHere(true);
     child->name.setFamily(child->father->getFamilyName());
+    child->generateGenes();
+
     globalStatistics.births++;
     globalStatistics.totalNumberOfPeople++;
 
@@ -451,6 +456,8 @@ void Person::describe(Date d, bool stats)
         }
     }
 
+    description << "Their genetic infertility factor was " << std::fixed << std::setprecision(2) << genetics.infertility_factor << std::endl;
+
     if (!mother && !father) {
         description << "It is not known who " << getPossessivePronoun() << " parents were." << std::endl;
     } else {
@@ -514,9 +521,11 @@ void Person::describe(Date d, bool stats)
     }
 
     if (stats) {
-        description << cap(getPersonalPronoun()) << " got married " << statistics.marriages << " times, and had sex " << statistics.sexytimes << " times." << std::endl;
-        if (genetics.gender == female) {
-            description << cap(getPersonalPronoun()) << " got pregnant " << statistics.pregnancies << " times." << std::endl;
+        if ((isAlive() && getAge(d) > c.ageAdult) || (!isAlive() && getAge(getDeathDate()) > c.ageAdult)) {
+            description << cap(getPersonalPronoun()) << " got married " << statistics.marriages << " times, and had sex " << statistics.sexytimes << " times." << std::endl;
+            if (genetics.gender == female) {
+                description << cap(getPersonalPronoun()) << " got pregnant " << statistics.pregnancies << " times." << std::endl;
+            }
         }
     }
 
